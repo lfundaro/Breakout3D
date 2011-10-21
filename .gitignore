@@ -1,2 +1,15 @@
 breakout
 main
+test.c
+test
+*.pdf
+*.o
+*tar.gz
+semantic.cache
+*.*~
+.\#*
+test*
+prueba.txt
+prueba2.txt
+TODO
+\#*
