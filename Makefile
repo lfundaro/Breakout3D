@@ -10,5 +10,8 @@ all: $(OBJS) Makefile
 main.o : main.c
 	$(GCC) $(OPS) -c main.c
 
+test: 
+	$(GCC) $(LINK_OPS) test.c -o test 
+
 clean:
 	rm -rf main breakout .\#* \#* *.o .*~ *~ *.gch
