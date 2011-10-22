@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void inicNivel(Nivel *nivel, int num,char *identificador, int impacto, float velocidad, LisBloque *bloques) {
+void iniNivel(Nivel *nivel, int num,char *identificador, int impacto, float velocidad, LisBloque *bloques) {
   nivel->num = num;
   nivel->id = identificador;
   nivel->impacto = impacto;
@@ -61,9 +61,9 @@ void liberarLisNivel(LisNivel *lista) {
     tmp = apuntador;
     liberarNivel(tmp->nivel);
     apuntador = apuntador->siguiente;
-    free(tmp)
+    free(tmp);
   }
-  free(lista)
+  free(lista);
 }
 
 void iniBloque(Bloque *bloque, int fila, int columna, char color) {
@@ -76,12 +76,30 @@ void liberarBloque(Bloque *bloque) {
   free(bloque);
 }
 
-void iniListBloque(LisBloque *lista){
-  lista->numElementos == 0;
+int esVaciaBloque(LisBloque *lista){
+  return lista->numElementos == 0;
 }
 
-int esVaciaBloque(LisBloque bloque){
-  return lista->numElementos == 0;
+void iniListBloque(LisBloque *lista){
+  lista->numElementos = 0;
+  lista->primero = NULL;
+  lista->ultimo = NULL;
+}
+
+void agregarBloque(LisBloque *lista, Bloque *bloque, ElemBloque *elemento){
+  lista->numElementos++;
+  elemento->bloque = bloque;
+  elemento->siguiente = NULL;
+  if (lista->primero == NULL) {
+    lista->primero = elemento;
+  } else {
+    lista->ultimo->siguiente = elemento;
+  }
+  lista->ultimo = elemento;
+}
+
+ElemBloque *cabezaBloque(LisBloque *lista) {
+  return lista->primero;
 }
 
 void liberarLisBloque(LisBloque *lista) {
@@ -91,7 +109,7 @@ void liberarLisBloque(LisBloque *lista) {
     tmp = apuntador;
     liberarBloque(tmp->bloque);
     apuntador = apuntador->siguiente;
-    free(tmp)
+    free(tmp);
   }
-  fre(lista)
+  free(lista);
 }

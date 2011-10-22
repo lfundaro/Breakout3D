@@ -13,30 +13,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Nivel Nivel;
 typedef struct Bloque Bloque;
-typedef struct ListaNiv ListaNiv;
-typedef struct ListaBlo ListaBlo;
+typedef struct ElemBloque ElemBloque;
+typedef struct LisBloque LisBloque;
 
-struct Nivel {
-  int num;
-  char *id;
-  int impacto;
-  float velocidad;
-  ListaBlo bloques;
-}
+typedef struct Nivel Nivel;
+typedef struct ElemNivel ElemNivel;
+typedef struct LisNivel LisNivel;
+
 
 struct Bloque {
   int fila;
   int columna;
   char color;
-}
+};
 
-struct LisNivel {
-  int numElementos;
-  ElemNivel *primero;
-  ElemNivel *ultimo;
-}
+struct ElemBloque {
+  Bloque *bloque;
+  ElemBloque *siguiente;
+};
 
 struct LisBloque {
   int numElementos;
@@ -44,17 +39,27 @@ struct LisBloque {
   ElemBloque *ultimo;
 };
 
+struct Nivel {
+  int num;
+  char *id;
+  int impacto;
+  float velocidad;
+  LisBloque *bloques;
+};
+
 struct ElemNivel {
   Nivel *nivel;
   ElemNivel *siguiente;
-}
+};
 
-struct ElemBloque {
-  Bloque *bloque;
-  ElemBloque *siguiente;
-}
+struct LisNivel {
+  int numElementos;
+  ElemNivel *primero;
+  ElemNivel *ultimo;
+};
 
-extern void iniNivel(Nivel *nivel, int num,char *identificador, int impacto, float velocidad);
+
+extern void iniNivel(Nivel *nivel, int num,char *identificador, int impacto, float velocidad, LisBloque *bloques);
 extern void liberarNivel(Nivel *nivel);
 
 extern int esVaciaNivel(LisNivel *lista);
@@ -68,6 +73,6 @@ extern void liberarBloque(Bloque *bloque);
 
 extern int esVaciaBloque(LisBloque *lista);
 extern void iniLisBloque(LisBloque *lista);
-extern void agregarBloque(LisBloque *lista, Bloque *bloque);
-extern ElemNivel *cabezaBloque (LisBloque *lista);
+extern void agregarBloque(LisBloque *lista, Bloque *bloque, ElemBloque *elemento);
+extern ElemBloque *cabezaBloque (LisBloque *lista);
 extern void liberarLisBloque(LisBloque *lista);
