@@ -34,7 +34,6 @@ void iniLisNivel(LisNivel *lista,int vida, int frio, int salto){
   lista->numElementos = 0;
   lista->primero = NULL;
   lista->ultimo = NULL;
-
 }
 
 int esVaciaNivel(LisNivel *lista){
@@ -68,6 +67,39 @@ void liberarLisNivel(LisNivel *lista) {
   }
   free(lista);
 }
+
+int numNivel(Nivel *nivel) {
+  return (nivel->num);
+}
+
+char *nomNivel(Nivel *nivel){
+  return (nivel->id);
+}
+
+int impNivel(Nivel *nivel){
+  return (nivel->impacto);
+}
+
+float velNivel(Nivel *nivel){
+  return (nivel->velocidad);
+}
+
+LisBloque *bloquesNivel(Nivel *nivel){
+  return (nivel->bloques);
+}
+
+int vida(LisNivel *niveles) {
+  return (niveles->vida);
+}
+
+extern int enfriamiento(LisNivel *niveles){
+  return (niveles->enfriamiento);
+}
+
+extern int salto(LisNivel *niveles){
+  return (niveles->salto);
+}
+
 
 void iniBloque(Bloque *bloque, int fila, int columna, char color) {
   bloque->fila = fila;
@@ -115,4 +147,14 @@ void liberarLisBloque(LisBloque *lista) {
     free(tmp);
   }
   free(lista);
+}
+
+int fila(Bloque *bloque){
+  return (bloque->fila);
+}
+int columna(Bloque *bloque){
+  return (bloque->columna);
+}
+char color(Bloque *bloque){
+  return (bloque->color);
 }
