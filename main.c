@@ -2,6 +2,8 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+float desplazamiento = 0.0;
+
 void init(void)
 {
   glClearColor (0.0, 0.0, 0.0, 0.0);
@@ -11,85 +13,36 @@ void init(void)
 void display(void)
 {
   glEnable(GL_DEPTH_TEST);
-  glClear (GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT);
+  glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity ();
   /* clear the matrix */
   /* viewing transformation */
   gluLookAt (0.0,7.0, -18.0, 0.0, -3.0, 0.0, 0.0, 1.0, 0.0);
   //gluLookAt (0.0,1.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   
-  glScalef (11.0, 27.5, 11.0);
-  glRotatef (80.0, 1.0, 0.0, 0.0); 
-  /* Tablero base */
-  glColor3f (1.0, 1.0, 1.0);
-  glBegin(GL_QUADS);
-  glVertex3f(1.0,1.0,0.0);
-
-  glVertex3f(-1.0,1.0,0.0);
-
-  glVertex3f(-1.0,-1.0,0.0);
-
-  glVertex3f(1.0,-1.0,0.0);
-  glEnd();
-
-  /* Banda lateral izquierda */
-  glColor3f (0.4, 0.4, 0.4);
-  glBegin (GL_QUADS);
-
-  glVertex3f(-1.0, -1.0, -0.1);
-
-  glVertex3f(-1.0, -1.0, 0.0);
-
-  glVertex3f(-1.0, 1.0, 0.0);
-
-  glVertex3f(-1.0, 1.0, -0.1);
-  glEnd ();
-
-
-  /* Banda lateral derecha */
-  glColor3f (0.4, 0.4, 0.4);
-  glBegin (GL_QUADS);
-  glVertex3f(1.0, -1.0, -0.1);
-
-  glVertex3f(1.0, -1.0, 0.0);
-
-  glVertex3f(1.0, 1.0, 0.0);
-
-  glVertex3f(1.0, 1.0, -0.1);
-  glEnd ();
-
-  /* Banda superior */
-  glColor3f (0.2, 0.2, 0.2);
-  glBegin (GL_QUADS);
-  glVertex3f(1.0, 1.0, -0.1);
-
-  glVertex3f(1.0, 1.0, 0.0);
-
-  glVertex3f(-1.0, 1.0, 0.0);
-
-  glVertex3f(-1.0, 1.0, -0.1);
-  glEnd ();
-
-  /* Cubo disparador */ 
-  glPushMatrix ();
-  glTranslatef (0.0, -1.181, -0.2);
-  glScalef (0.3, 0.05, 0.01);
-  glColor3f (0.0, 0.0, 1.0);
-  glutSolidCube(1.0);
+  dibujarTablero (desplazamiento);
   
-  glRotatef (90.0, 0.0, 1.0, 0.0);
-  glBegin (GL_LINE_LOOP);
-  glColor3f (1.0, 0.0, 0.0);
-  glVertex3f (-1.0,0.0,0.0);
-  glVertex3f (0.0,-1.0,0.0);
-  glVertex3f (1.0,0.0,0.0);
-  glVertex3f (0.0,1.0,0.0);
-  glEnd ();
- 
-  glPopMatrix ();
 
+  /* glPushMatrix(); */
+  /* float i; */
+  /* glColor3f (0.0, 0.0, 0.0); */
+  /* for (i = 1.0; i > 0.7; i = i - 0.1) */
+  /*   { */
+  /*     glLoadIdentity(); */
+  /*     glScalef (11.0, 27.5, 11.0); */
+  /*     glRotatef (80.0, 1.0, 0.0, 0.0);  */
+  /*     glBegin (GL_LINE_LOOP); */
+  /*     glVertex3f(i,i,0.0); */
+  /*     glVertex3f(-i,i,0.0); */
+  /*     glVertex3f(-i,-i,0.0); */
+  /*     glVertex3f(i,-i,0.0); */
+  /*     glEnd(); */
+  /*   } */
+  /* glPopMatrix(); */
 
-  
+  /* Contorno Tablero base */
+
+  glutSwapBuffers();
   glFlush ();
 }
 
@@ -105,6 +58,37 @@ void reshape (int w, int h)
   glMatrixMode (GL_MODELVIEW);
 }
 
+void 
+teclaIzquierda ()
+{
+  desplazamiento += 0.05;
+  return;
+}
+
+void
+teclaDerecha ()
+{
+  desplazamiento -= 0.05;
+  return;
+}
+
+void
+procesarTeclas (int key, int x, int y) 
+{
+  switch (key)
+    {
+    case GLUT_KEY_LEFT:
+      teclaIzquierda ();
+      break;
+    case GLUT_KEY_RIGHT:
+      teclaDerecha ();
+      break;
+    default:
+      break;
+    }
+  return;
+}
+
 int main(int argc, char** argv)
 {
   glutInit(&argc, argv);
@@ -116,6 +100,8 @@ int main(int argc, char** argv)
   glEnable(GL_DEPTH_TEST);
   glutDisplayFunc(display);
   glutReshapeFunc(reshape);
+  glutIdleFunc(display);
+  glutSpecialFunc(procesarTeclas);
   glutMainLoop();
   return 0;
 }
