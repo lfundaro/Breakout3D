@@ -23,11 +23,14 @@ void iniNivel(Nivel *nivel, int num,char *identificador, int impacto, float velo
 }
 
 void liberarNivel(Nivel *nivel) {
-  free(nivel->id);
   liberarLisBloque(nivel->bloques);
   free(nivel);
 }
-void iniLisNivel(LisNivel *lista){
+
+void iniLisNivel(LisNivel *lista,int vida, int frio, int salto){
+  lista->vida = vida;
+  lista->enfriamiento = frio;
+  lista->salto;
   lista->numElementos = 0;
   lista->primero = NULL;
   lista->ultimo = NULL;
@@ -80,7 +83,7 @@ int esVaciaBloque(LisBloque *lista){
   return lista->numElementos == 0;
 }
 
-void iniListBloque(LisBloque *lista){
+void iniLisBloque(LisBloque *lista){
   lista->numElementos = 0;
   lista->primero = NULL;
   lista->ultimo = NULL;

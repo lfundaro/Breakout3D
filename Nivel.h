@@ -53,6 +53,9 @@ struct ElemNivel {
 };
 
 struct LisNivel {
+  int vida;
+  int enfriamiento;
+  int salto;
   int numElementos;
   ElemNivel *primero;
   ElemNivel *ultimo;
@@ -63,7 +66,7 @@ extern void iniNivel(Nivel *nivel, int num,char *identificador, int impacto, flo
 extern void liberarNivel(Nivel *nivel);
 
 extern int esVaciaNivel(LisNivel *lista);
-extern void iniLisNivel(LisNivel *lista);
+extern void iniLisNivel(LisNivel *lista,int vida, int frio, int salto);
 extern void agregarNivel(LisNivel *lista, Nivel *nivel, ElemNivel *elemento);
 extern ElemNivel *cabezaNivel (LisNivel *lista);
 extern void liberarLisNivel(LisNivel *lista);
