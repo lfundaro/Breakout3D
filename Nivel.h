@@ -13,35 +13,69 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Nivel Nivel;
 typedef struct Bloque Bloque;
-typedef struct ElemNiv ElemNiv;
-typedef struct ElemBlo ElemBlo;
-typedef struct ListaNiv ListaNiv;
-typedef struct ListaBlo ListaBlo;
+typedef struct ElemBloque ElemBloque;
+typedef struct LisBloque LisBloque;
 
-struct Nivel {
-  int num;
-  String id;
-  int impacto;
-  float velocidad;
-  ListaBlo bloques;
-};
+typedef struct Nivel Nivel;
+typedef struct ElemNivel ElemNivel;
+typedef struct LisNivel LisNivel;
+
 
 struct Bloque {
   int fila;
   int columna;
-  int color;
-}
-
-struct ListaNiv {
-  int numElementos;
-  ElemNiv *primero;
-  Elem *ultimo;
+  char color;
 };
 
-struct ListaBlo {
-  int numElementos;
-  Elem *primero;
-  Elem *ultimo;
+struct ElemBloque {
+  Bloque *bloque;
+  ElemBloque *siguiente;
 };
+
+struct LisBloque {
+  int numElementos;
+  ElemBloque *primero;
+  ElemBloque *ultimo;
+};
+
+struct Nivel {
+  int num;
+  char *id;
+  int impacto;
+  float velocidad;
+  LisBloque *bloques;
+};
+
+struct ElemNivel {
+  Nivel *nivel;
+  ElemNivel *siguiente;
+};
+
+struct LisNivel {
+  int vida;
+  int enfriamiento;
+  int salto;
+  int numElementos;
+  ElemNivel *primero;
+  ElemNivel *ultimo;
+};
+
+
+extern void iniNivel(Nivel *nivel, int num,char *identificador, int impacto, float velocidad, LisBloque *bloques);
+extern void liberarNivel(Nivel *nivel);
+
+extern int esVaciaNivel(LisNivel *lista);
+extern void iniLisNivel(LisNivel *lista,int vida, int frio, int salto);
+extern void agregarNivel(LisNivel *lista, Nivel *nivel, ElemNivel *elemento);
+extern ElemNivel *cabezaNivel (LisNivel *lista);
+extern void liberarLisNivel(LisNivel *lista);
+
+extern void iniBloque(Bloque *bloque, int fila, int columna, char color);
+extern void liberarBloque(Bloque *bloque);
+
+extern int esVaciaBloque(LisBloque *lista);
+extern void iniLisBloque(LisBloque *lista);
+extern void agregarBloque(LisBloque *lista, Bloque *bloque, ElemBloque *elemento);
+extern ElemBloque *cabezaBloque (LisBloque *lista);
+extern void liberarLisBloque(LisBloque *lista);
