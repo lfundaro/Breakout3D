@@ -10,9 +10,8 @@
  * * Jose    Lezama             07-41104
  *
  *************************************************************/
-#include <stdio.h>
-#include <stdlib.h>
-
+#ifndef NIVEL_H
+#define NIVEL_H
 typedef struct Bloque Bloque;
 typedef struct ElemBloque ElemBloque;
 typedef struct LisBloque LisBloque;
@@ -71,6 +70,14 @@ extern void agregarNivel(LisNivel *lista, Nivel *nivel, ElemNivel *elemento);
 extern ElemNivel *cabezaNivel (LisNivel *lista);
 extern void liberarLisNivel(LisNivel *lista);
 
+extern int numNivel(Nivel *nivel);
+extern char *nomNivel(Nivel *nivel);
+extern int impNivel(Nivel *nivel);
+extern LisBloque *bloquesNivel(Nivel *nivel);
+extern int vida(LisNivel *niveles);
+extern int enfriamiento(LisNivel *niveles);
+extern int salto(LisNivel *niveles);
+
 extern void iniBloque(Bloque *bloque, int fila, int columna, char color);
 extern void liberarBloque(Bloque *bloque);
 
@@ -79,3 +86,9 @@ extern void iniLisBloque(LisBloque *lista);
 extern void agregarBloque(LisBloque *lista, Bloque *bloque, ElemBloque *elemento);
 extern ElemBloque *cabezaBloque (LisBloque *lista);
 extern void liberarLisBloque(LisBloque *lista);
+
+extern int fila(Bloque *bloque);
+extern int columna(Bloque *bloque);
+extern char color(Bloque *bloque);
+
+#endif

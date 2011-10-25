@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include "Nivel.h"
 
-int main () {
+LisNivel *cargarInfo(){
   FILE *archivo;
   char caracter[100];
   char *caracter2;
@@ -13,17 +14,24 @@ int main () {
   int tmpVida;
   int tmpFrio;
   int tmpSalto;
-  int tmpNivel;
-  char *tmpNombre;
+  int tmpNumNivel;
+  char tmpNombre[100];
   int tmpImpactos;
   float tmpVelocidad;
-  int tmpBloques;
+  int tmpNumBloques;
   int i,j;
   int tmpFila,tmpColumna;
   char tmpColor;
-
+  LisBloque *tmpBloques;
+  Bloque *tmpBloque;
+  ElemBloque *tmpeBloque;
+  LisNivel *tmpNiveles;
+  Nivel *tmpNivel;
+  ElemNivel *tmpeNivel;
   archivo = fopen("CONFIGURACION","r");
   if (archivo == NULL){
+    tmpNiveles = (LisNivel*)malloc(sizeof(LisNivel));
+    iniLisNivel(tmpNiveles,0,0,0);
     printf("\nNo se consigue el archivo de confifuracion.\n\n");
   }else{
     fgets(caracter,100,archivo);
@@ -39,12 +47,14 @@ int main () {
     printf("Salto: %d\n",tmpSalto);
 
     fgets(caracter,100,archivo);
-    tmpNivel = atoi (caracter);
-    printf("Niveles: %d\n",tmpNivel);
+    tmpNumNivel = atoi (caracter);
+    printf("Niveles: %d\n",tmpNumNivel);
+    tmpNiveles = (LisNivel*)malloc(sizeof(LisNivel));
+    iniLisNivel(tmpNiveles,tmpVida,tmpFrio,tmpSalto);
     i = 0;
-    while (i < tmpNivel) {
-      fgets(caracter,100,archivo);
-      printf("\nNombre del Nivel: %s",caracter);
+    while (i < tmpNumNivel) {
+      fgets(tmpNombre,100,archivo);
+      printf("\nNombre del Nivel: %s",tmpNombre);
       fgets(caracter,100,archivo);
       caracter2 = strtok(caracter, separador);
       tmpImpactos = atoi(caracter2);
@@ -52,28 +62,40 @@ int main () {
       caracter2 = strtok(NULL,separador);
       caracter3 = strtok(caracter2,separador2);
       //      caracter3 = strtok(caracter3,separador3);
-      tmpBloques = atoi(caracter3);;
+      tmpNumBloques = atoi(caracter3);;
       caracter3 = strtok(NULL,separador2);
-      tmpVelocidad = ((float)(tmpBloques))+((float)(0.1* atoi(caracter3)));
+      tmpVelocidad = ((float)(tmpNumBloques))+((float)(0.1* atoi(caracter3)));
       printf("Velocidad: %.2f\n",tmpVelocidad);
       fgets(caracter,100,archivo);
-      tmpBloques = atoi(caracter);
-      printf("Bloques(%d):\n",tmpBloques);
+      tmpNumBloques = atoi(caracter);
+      printf("Bloques(%d):\n",tmpNumBloques);
       j=0;
-      while (j < tmpBloques) {
-	fgets(caracter,100,archivo);
-	tmpFila = atoi(strtok(caracter,separador));
-	tmpColumna= atoi(strtok(NULL,separador));
-	caracter2 = strtok(NULL,separador);
-	tmpColor = caracter2[0];
-	printf("(%d,%d,%c)\n",tmpFila,tmpColumna,tmpColor);
-	j++;
+      tmpBloques = (LisBloque*)malloc(sizeof(LisBloque));
+      iniLisBloque(tmpBloques);
+      while (j < tmpNumBloques) {
+        fgets(caracter,100,archivo);
+	caracter2 = strtok(caracter,separador);
+        tmpFila = atoi(caracter2);
+        caracter2 = strtok(NULL,separador);
+	tmpColumna= atoi(caracter2);
+        caracter2 = strtok(NULL,separador);
+        tmpColor = caracter2[0];
+        printf("(%d,%d,%c)\n",tmpFila,tmpColumna,tmpColor);
+
+        tmpBloque = (Bloque*)malloc(sizeof(Bloque));
+        iniBloque(tmpBloque,tmpFila,tmpColumna,tmpColor);
+        tmpeBloque = (ElemBloque*)malloc(sizeof(ElemBloque));
+        agregarBloque(tmpBloques,tmpBloque,tmpeBloque);
+        j++;
       }
+      tmpNivel = (Nivel*)malloc(sizeof(Nivel));
+      iniNivel(tmpNivel,i,tmpNombre,tmpImpactos,tmpVelocidad,tmpBloques);
+      tmpeNivel = (ElemNivel*)malloc(sizeof(ElemNivel));
+      agregarNivel(tmpNiveles,tmpNivel,tmpeNivel);
       i++;
-      
     }
+    printf("Carga exitosa\n");
+    fclose(archivo);
   }
-  printf("Carga exitosa\n");
-  fclose(archivo);
-  return 0;
+  return tmpNiveles;
 }
