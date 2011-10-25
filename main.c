@@ -4,58 +4,20 @@
 
 float desplazamiento = 0.0;
 
-void init(void)
-{
-  glClearColor (0.0, 0.0, 0.0, 0.0);
-  glShadeModel (GL_SMOOTH);
-}
-
 void display(void)
 {
-  glEnable(GL_DEPTH_TEST);
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glLoadIdentity ();
+  glLoadIdentity();
   /* clear the matrix */
   /* viewing transformation */
-  gluLookAt (0.0,7.0, -18.0, 0.0, -3.0, 0.0, 0.0, 1.0, 0.0);
-  //gluLookAt (0.0,1.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+  //  gluLookAt (0.0,7.0, -18.0, 0.0, -3.0, 0.0, 0.0, 1.0, 0.0);
+  //gluLookAt (0.0,10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   
   dibujarTablero (desplazamiento);
   
 
-  /* glPushMatrix(); */
-  /* float i; */
-  /* glColor3f (0.0, 0.0, 0.0); */
-  /* for (i = 1.0; i > 0.7; i = i - 0.1) */
-  /*   { */
-  /*     glLoadIdentity(); */
-  /*     glScalef (11.0, 27.5, 11.0); */
-  /*     glRotatef (80.0, 1.0, 0.0, 0.0);  */
-  /*     glBegin (GL_LINE_LOOP); */
-  /*     glVertex3f(i,i,0.0); */
-  /*     glVertex3f(-i,i,0.0); */
-  /*     glVertex3f(-i,-i,0.0); */
-  /*     glVertex3f(i,-i,0.0); */
-  /*     glEnd(); */
-  /*   } */
-  /* glPopMatrix(); */
-
-  /* Contorno Tablero base */
-
-  glutSwapBuffers();
+  //  glutSwapBuffers();
   glFlush ();
-}
-
-void reshape (int w, int h)
-{
-  glEnable(GL_DEPTH_TEST);
-  float aspectratio;
-  aspectratio = (float) w / (float) h;
-  glViewport (0, 0, (GLsizei) w, (GLsizei) h);
-  glMatrixMode (GL_PROJECTION);
-  glLoadIdentity ();
-  gluPerspective(100.0f, aspectratio, 1.0, 400.0);
-  glMatrixMode (GL_MODELVIEW);
 }
 
 void 
@@ -89,19 +51,38 @@ procesarTeclas (int key, int x, int y)
   return;
 }
 
+
+void reshape (int w, int h)
+{
+  float aspectratio;
+  aspectratio = (float) w / (float) h;
+  glMatrixMode (GL_PROJECTION);
+  glLoadIdentity();
+  glViewport (0, 0, (GLsizei) w, (GLsizei) h);
+  gluPerspective(60.0f, aspectratio, 2.0f, 100.0f);
+  glMatrixMode(GL_MODELVIEW);
+}
+
 int main(int argc, char** argv)
 {
+  /* Inicialización de ventana */
   glutInit(&argc, argv);
   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB |  GLUT_DEPTH);
-  glutInitWindowSize (1024, 768);
+  //  glutInitWindowSize (1024, 768);
+  glutInitWindowSize (800, 600);
   glutInitWindowPosition (100, 150);
   glutCreateWindow (argv[0]);
-  init ();
+  /* Propiedades de openGL */
   glEnable(GL_DEPTH_TEST);
-  glutDisplayFunc(display);
+  glClearDepth (1.0f);
+  glClearColor(0,0,0,1.0f);
+  glShadeModel(GL_SMOOTH); 
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
+  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); 
+  /* Directivas para graficar */
   glutReshapeFunc(reshape);
-  glutIdleFunc(display);
-  glutSpecialFunc(procesarTeclas);
+  glutDisplayFunc(display);
+  //glutSpecialFunc(procesarTeclas);
   glutMainLoop();
   return 0;
 }
