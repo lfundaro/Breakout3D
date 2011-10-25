@@ -17,4 +17,4 @@ test:
 	$(GCC) $(LINK_OPS) test.c -o test 
 
 clean:
-	rm -rf main breakout .\#* \#* *.o .*~ *~ *.gch
+	rm -rf main breakout test .\#* \#* *.o .*~ *~ *.gch
