@@ -7,16 +7,20 @@ float desplazamiento = 0.0;
 void display(void)
 {
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   /* clear the matrix */
   /* viewing transformation */
-  //  gluLookAt (0.0,7.0, -18.0, 0.0, -3.0, 0.0, 0.0, 1.0, 0.0);
-  //gluLookAt (0.0,10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+  // Vista inclinada
+  //  gluLookAt (0.0, 5.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+  gluLookAt (0.0, 5.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+  // Vista recta
+  //  gluLookAt (0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
   
   dibujarTablero (desplazamiento);
   
 
-  //  glutSwapBuffers();
+  glutSwapBuffers();
   glFlush ();
 }
 
@@ -58,9 +62,10 @@ void reshape (int w, int h)
   aspectratio = (float) w / (float) h;
   glMatrixMode (GL_PROJECTION);
   glLoadIdentity();
-  glViewport (0, 0, (GLsizei) w, (GLsizei) h);
-  gluPerspective(60.0f, aspectratio, 2.0f, 100.0f);
+  gluPerspective(60.0f, aspectratio, 0.5, 100.0);
+  //  glFrustum (0.0,0.0,w,h,-20.0,200.0);
   glMatrixMode(GL_MODELVIEW);
+  glViewport (0, 0, (GLsizei) w, (GLsizei) h);
 }
 
 int main(int argc, char** argv)
