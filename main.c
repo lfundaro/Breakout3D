@@ -1,8 +1,15 @@
+#include "Lector.h"
+#include "Nivel.h"
+
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include <stdio.h>
 
+LisNivel *juego;
+LisBloque *tmpBloques;
+ElemBloque *tmpBloque;
+ElemNivel *tmpNivel;
 float desplazamiento = 0.0;
 
 void display(void)
@@ -13,23 +20,32 @@ void display(void)
   /* clear the matrix */
   /* viewing transformation */
   // Vista inclinada
-  //  gluLookAt (0.0, 5.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
-  //  gluLookAt (0.0, 5.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
-    gluLookAt (0.0, 5.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+  // gluLookAt (0.0, 8.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+  //  gluLookAt (0.0, 5.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+  // gluLookAt (0.0, 5.0, 8.0, 0.0, 3.0, 0.0, 0.0, 2.0, -1.0);
+   gluLookAt (0.0, 8.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
   // Vista recta
-  //gluLookAt (0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
-  
+  //   gluLookAt (10, 7, -3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+
   glPushMatrix();
-  glTranslatef(desplazamiento,0.0,2.1);
-  cuboMovible ();
+  glTranslatef(desplazamiento,0,0);
+  cuboMovible (desplazamiento);
   glPopMatrix();
-  
+
+  tmpBloque = cabezaBloque(tmpBloques);
+  while (tmpBloque != NULL) {
+    glPushMatrix();
+    dibujarBloque(tmpBloque);
+    glPopMatrix();
+    tmpBloque = (tmpBloque->siguiente);
+  }
+
   dibujarTablero (desplazamiento);
   glutSwapBuffers();
   glFlush ();
 }
 
-void 
+void
 teclaDerecha ()
 {
   if (desplazamiento < 1.9)
@@ -50,11 +66,11 @@ keyboard (unsigned char key, int x, int y)
 {
   switch (key)
     {
-    case 'a':
+    case 'a':case 'A':
       teclaIzquierda ();
       glutPostRedisplay();
       break;
-    case 'd':
+    case 'd':case 'D':
       teclaDerecha ();
       glutPostRedisplay();
       break;
@@ -79,6 +95,14 @@ void reshape (int w, int h)
 
 int main(int argc, char** argv)
 {
+  juego = (LisNivel*)malloc(sizeof(LisNivel));
+  juego = cargarInfo();
+  tmpBloques =(LisBloque*)malloc(sizeof(LisBloque));
+  tmpBloque = (ElemBloque*)malloc(sizeof(ElemBloque));
+  tmpNivel = (ElemNivel*)malloc(sizeof(ElemNivel));
+  tmpNivel = cabezaNivel(juego);
+  tmpBloques = bloquesNivel(tmpNivel->nivel);
+
   /* Inicialización de ventana */
   glutInit(&argc, argv);
   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB |  GLUT_DEPTH);

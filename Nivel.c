@@ -30,7 +30,7 @@ void liberarNivel(Nivel *nivel) {
 void iniLisNivel(LisNivel *lista,int vida, int frio, int salto){
   lista->vida = vida;
   lista->enfriamiento = frio;
-  lista->salto;
+  lista->salto = salto;
   lista->numElementos = 0;
   lista->primero = NULL;
   lista->ultimo = NULL;
