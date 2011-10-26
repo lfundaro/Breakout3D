@@ -1,7 +1,7 @@
 #include "elementos.h"
 
 void 
-dibujarTablero (float desplazamiento)
+dibujarTablero ()
 {
   /* Tablero base */
   glColor3f(1.0,1.0,1.0);
@@ -97,16 +97,100 @@ dibujarTablero (float desplazamiento)
   glVertex3f(1.0,0.0,1.0); // v3
   glEnd();
   glPopMatrix();
+}
 
-  /* Cubo movible */ 
-  glPushMatrix();
-  glTranslatef(0.0,1.4,2.49);
-  glScalef(0.6,0.5,0.2);
+void
+cuboMovible () 
+{
+/* Cubo movible */
+  // Cara trasera
   glColor3f(0.0,0.0,1.0);
-  glutSolidCube(1);
-  glColor3f(0.0,0.0,0.0);
-  glLineWidth(2);
-  glutWireCube(1);
-  glPopMatrix();
+  glBegin(GL_QUADS);
+  glVertex3f(0.5,0.0,0.5); // v3
+  glVertex3f(0.5,0.2,0.5);
+  glVertex3f(-0.5,0.2,0.5);
+  glVertex3f(-0.5,0.0,0.5); // v2
+  glEnd();
 
+  // Techo
+  glColor3f(0.0,0.0,1.0);
+  glBegin(GL_QUADS);
+  glVertex3f(0.5,0.2,0.5);
+  glVertex3f(0.5,0.2,0.3);
+  glVertex3f(-0.5,0.2,0.3);
+  glVertex3f(-0.5,0.2,0.5);
+  glEnd();
+
+  //Pared Derecha
+  glColor3f(0.0,0.0,1.0);
+  glBegin(GL_QUADS);
+  glVertex3f(0.5,0.2,0.5);
+  glVertex3f(0.5,0.2,0.3);
+  glVertex3f(0.5,0.0,0.3);
+  glVertex3f(0.5,0.0,0.5);
+  glEnd();
+
+  // Pared Izquierda
+  glColor3f(1.0,0.5,1.0);
+  glBegin(GL_QUADS);
+  glVertex3f(-0.5,0.2,0.5);
+  glVertex3f(-0.5,0.2,0.3);
+  glVertex3f(-0.5,0.2,0.3);
+  glVertex3f(-0.5,0.0,0.5);
+  glEnd();
+
+  // Pared Frontal
+  glColor3f(0.0,0.0,1.0);
+  glBegin(GL_QUADS);
+  glVertex3f(0.5,0.2,0.3);
+  glVertex3f(-0.5,0.2,0.3);
+  glVertex3f(-0.5,0.0,0.3);
+  glVertex3f(0.5,0.0,0.3);
+  glEnd();
+
+  /* FIN Cubo movible */
+
+  /* Bordes Cubo movible */
+  // Cara trasera
+  glLineWidth(2);
+  glColor3f (0.0, 0.0, 0.0);
+  glBegin (GL_LINE_LOOP);
+  glVertex3f(0.5,0.0,0.5); // v3
+  glVertex3f(0.5,0.2,0.5);
+  glVertex3f(-0.5,0.2,0.5);
+  glVertex3f(-0.5,0.0,0.5); // v2
+  glEnd();
+
+  // Techo 
+  glLineWidth(2);
+  glTranslatef(0.0,0.0,2.1);
+  glColor3f (0.0, 0.0, 0.0);
+  glBegin (GL_LINE_LOOP);
+  glVertex3f(0.5,0.2,0.5);
+  glVertex3f(0.5,0.2,0.3);
+  glVertex3f(-0.5,0.2,0.3);
+  glVertex3f(-0.5,0.2,0.5);
+  glEnd();
+
+  // Banda Izquierda
+  glLineWidth(2);
+  glTranslatef(0.0,0.0,2.1);
+  glColor3f (0.0, 0.0, 0.0);
+  glBegin (GL_LINE_LOOP);
+  glVertex3f(-0.5,0.2,0.5);
+  glVertex3f(-0.5,0.2,0.3);
+  glVertex3f(-0.5,0.2,0.3);
+  glVertex3f(-0.5,0.0,0.5);
+  glEnd();
+
+  // Banda Derecha
+  glLineWidth(2);
+  glTranslatef(0.0,0.0,2.1);
+  glColor3f (0.0, 0.0, 0.0);
+  glBegin (GL_LINE_LOOP);
+  glVertex3f(0.5,0.2,0.5);
+  glVertex3f(0.5,0.2,0.3);
+  glVertex3f(0.5,0.0,0.3);
+  glVertex3f(0.5,0.0,0.5);
+  glEnd();
 }

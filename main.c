@@ -1,6 +1,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+#include <stdio.h>
 
 float desplazamiento = 0.0;
 
@@ -13,48 +14,56 @@ void display(void)
   /* viewing transformation */
   // Vista inclinada
   //  gluLookAt (0.0, 5.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
-  gluLookAt (0.0, 5.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+  //  gluLookAt (0.0, 5.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+    gluLookAt (0.0, 5.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
   // Vista recta
-  //  gluLookAt (0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+  //gluLookAt (0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+  
+  glPushMatrix();
+  glTranslatef(desplazamiento,0.0,2.1);
+  cuboMovible ();
+  glPopMatrix();
   
   dibujarTablero (desplazamiento);
-  
-
   glutSwapBuffers();
   glFlush ();
 }
 
 void 
-teclaIzquierda ()
-{
-  desplazamiento += 0.05;
-  return;
-}
-
-void
 teclaDerecha ()
 {
-  desplazamiento -= 0.05;
+  if (desplazamiento < 1.9)
+    desplazamiento += 0.09;
   return;
 }
 
 void
-procesarTeclas (int key, int x, int y) 
+teclaIzquierda ()
+{
+  if (desplazamiento > -1.9)
+    desplazamiento -= 0.09;
+  return;
+}
+
+void
+keyboard (unsigned char key, int x, int y) 
 {
   switch (key)
     {
-    case GLUT_KEY_LEFT:
+    case 'a':
       teclaIzquierda ();
+      glutPostRedisplay();
       break;
-    case GLUT_KEY_RIGHT:
+    case 'd':
       teclaDerecha ();
+      glutPostRedisplay();
       break;
     default:
+      printf("Didnt match\n");
       break;
     }
   return;
 }
-
 
 void reshape (int w, int h)
 {
@@ -88,6 +97,8 @@ int main(int argc, char** argv)
   glutReshapeFunc(reshape);
   glutDisplayFunc(display);
   //glutSpecialFunc(procesarTeclas);
+  glutKeyboardFunc(keyboard);
+  
   glutMainLoop();
   return 0;
 }

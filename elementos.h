@@ -4,5 +4,8 @@
 
 // Función que dibuja el tablero
 void 
-dibujarTablero (float desplazamiento);
+dibujarTablero ();
+
+void 
+cuboMovible();
 
