@@ -50,7 +50,7 @@ void dibujarTablero ()
   /* Banda frontal */
   glPushMatrix();
   glColor3f(1.0,0.0,0.0);
-  glTranslatef(0.0,0.0,-2.8);
+  glTranslatef(0.0,0.0,-5);
   glScalef(2.5,1.0,1.0);
   glBegin(GL_QUADS);
   glVertex3f(1.0,0.0,-1.0); // vo
@@ -64,7 +64,7 @@ void dibujarTablero ()
   glPushMatrix();
   glLineWidth(2);
   glColor3f (0.0, 0.0, 0.0);
-  glTranslatef(0.0,0.0,-2.77);
+  glTranslatef(0.0,0.0,-4.95);
   glScalef(2.5,1.1,1.0);
   glBegin (GL_LINE_LOOP);
   glVertex3f(1.0,0.0,-1.0); // vo
@@ -77,8 +77,8 @@ void dibujarTablero ()
   /* Banda lateral izquierda */
   glPushMatrix();
   glColor3f(1.0,0.0,0.0);
-  glTranslatef(-1.5,0.0,-0.6);
-  glScalef(1.0,1.0,3.2);
+  glTranslatef(-1.5,0.0,-0.9);
+  glScalef(1.0,1.0,5.0);
   glBegin(GL_QUADS);
   glVertex3f(-1.0,0.0,-1.0); // v1
   glVertex3f(-1.0,0.2,-1.0); // v7
@@ -91,8 +91,8 @@ void dibujarTablero ()
   glPushMatrix();
   glColor3f (0.0, 0.0, 0.0);
   glLineWidth(2);
-  glTranslatef(-1.45,0.1,-0.5);
-  glScalef(1.0,1.0,3.2);
+  glTranslatef(-1.48,0.1,-0.9);
+  glScalef(1.0,1.0,5.0);
   glBegin (GL_LINE_LOOP);
   glVertex3f(-1.0,0.0,-1.0); // v1
   glVertex3f(-1.0,0.2,-1.0); // v7
@@ -105,8 +105,8 @@ void dibujarTablero ()
   /* Banda lateral derecha */
   glPushMatrix();
   glColor3f(1.0,0.0,0.0);
-  glTranslatef(1.5,0.0,-0.6);
-  glScalef(1.0,1.0,3.2);
+  glTranslatef(1.5,0.0,-0.9);
+  glScalef(1.0,1.0,5.0);
   glBegin(GL_QUADS);
   glVertex3f(1.0,0.0,-1.0); // vo
   glVertex3f(1.0,0.2,-1.0); // v8
@@ -119,8 +119,8 @@ void dibujarTablero ()
   glPushMatrix();
   glColor3f (0.0, 0.0, 0.0);
   glLineWidth(2);
-  glTranslatef(1.45,0.1,-0.5);
-  glScalef(1.0,1.0,3.2);
+  glTranslatef(1.45,0.1,-0.9);
+  glScalef(1.0,1.0,5.0);
   glBegin (GL_LINE_LOOP);
   glVertex3f(1.0,0.0,-1.0); // vo
   glVertex3f(1.0,0.2,-1.0); // v8
