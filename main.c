@@ -5,12 +5,17 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include <stdio.h>
+#include <math.h>
 
 LisNivel *juego;
 LisBloque *tmpBloques;
 ElemBloque *tmpBloque;
 ElemNivel *tmpNivel;
-float desplazamiento = 0.0;
+float despDisparador = 0.0;
+float despPelotaZ = 3.7;
+float despPelotaX = 0.0;
+int pelotaInicial = 1;
+int pelotaSube = 1;
 
 void display(void)
 {
@@ -28,36 +33,65 @@ void display(void)
   //   gluLookAt (10, 7, -3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
 
   glPushMatrix();
-  glTranslatef(desplazamiento,0,0);
-  cuboMovible (desplazamiento);
+  glTranslatef(despDisparador,0,0);
+  cuboMovible (despDisparador);
   glPopMatrix();
 
-  tmpBloque = cabezaBloque(tmpBloques);
-  while (tmpBloque != NULL) {
-    glPushMatrix();
-    dibujarBloque(tmpBloque);
-    glPopMatrix();
-    tmpBloque = (tmpBloque->siguiente);
-  }
+  /* tmpBloque = cabezaBloque(tmpBloques); */
+  /* while (tmpBloque != NULL) { */
+  /*   glPushMatrix(); */
+  /*   dibujarBloque(tmpBloque); */
+  /*   glPopMatrix(); */
+  /*   tmpBloque = (tmpBloque->siguiente); */
+  /* } */
 
-  dibujarTablero (desplazamiento);
+   glPushMatrix();
+  if (pelotaInicial) {
+    glTranslatef(0.0,0.5f,3.7);
+    Pelota();
+  }
+  else {
+    despPelotaX = 0.0;
+    if (pelotaSube) {
+      despPelotaZ -= 0.05;
+      if (abs(despPelotaZ + 6.3) < 0.001)
+        pelotaSube = 0;
+    } 
+    else {  // Pelota baja
+      despPelotaZ += 0.05;
+      if (despPelotaZ - 3.7 > 0.001)
+        pelotaSube = 1;
+    }
+    glTranslatef(despPelotaX, 0.5f, despPelotaZ);
+    Pelota();
+    glutPostRedisplay();
+  }
+  glPopMatrix();
+  
+  dibujarTablero (despDisparador);
   glutSwapBuffers();
   glFlush ();
+}
+
+void 
+teclaDisparar() 
+{
+  pelotaInicial = 0;
 }
 
 void
 teclaDerecha ()
 {
-  if (desplazamiento < 1.9)
-    desplazamiento += 0.09;
+  if (despDisparador < 1.9)
+    despDisparador += 0.09;
   return;
 }
 
 void
 teclaIzquierda ()
 {
-  if (desplazamiento > -1.9)
-    desplazamiento -= 0.09;
+  if (despDisparador > -1.9)
+    despDisparador -= 0.09;
   return;
 }
 
@@ -72,6 +106,11 @@ keyboard (unsigned char key, int x, int y)
       break;
     case 'd':case 'D':
       teclaDerecha ();
+      glutPostRedisplay();
+      break;
+    case 32:
+      printf("teclearon espacio \n");
+      teclaDisparar();
       glutPostRedisplay();
       break;
     default:
