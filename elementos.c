@@ -131,17 +131,36 @@ void dibujarTablero ()
 }
 
 void
+Pelota (float despPelota) 
+{
+  glColor3f(0.4,0.4,0.4);
+  glPushMatrix();
+  glutSolidSphere(0.1,50,50);
+  glPopMatrix();
+  return;
+}
+
+void
 cuboMovible (float desp)
 {
   float tmpColumna= 4.5;
-  float tmpFila = 36.5*.4  ;
+  float tmpFila = 36.5*.4;
   glScalef(0.49,0.2,0.2);
   glTranslatef(-4.45+tmpColumna,0.5f,-29+5+(tmpFila*3));
   glColor3f(.3,.3,1);
   glutSolidCube(1);
+  // Contorno
   glColor3f(0.8,0.8,0.8);
   glLineWidth(3);
   glutWireCube(1);
+  // Disparador
+  glTranslatef(0.0,0.1,-0.05);
+  glScalef(0.5,1.0,0.9);
+  glColor3f(1.0,0.0,0.0);
+  glutSolidCube(1.0);
+
+
+ 
 /*
   // Cubo movible //
   // Cara trasera
