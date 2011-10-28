@@ -131,7 +131,7 @@ void dibujarTablero ()
 }
 
 void
-Pelota (float despPelota) 
+Pelota (double despPelota) 
 {
   glColor3f(0.4,0.4,0.4);
   glPushMatrix();
@@ -141,7 +141,7 @@ Pelota (float despPelota)
 }
 
 void
-cuboMovible (float desp)
+cuboMovible (double desp)
 {
   float tmpColumna= 4.5;
   float tmpFila = 36.5*.4;

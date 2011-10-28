@@ -7,5 +7,5 @@ void
 dibujarTablero ();
 
 void 
-cuboMovible(float desp);
+cuboMovible (double desp);
 
