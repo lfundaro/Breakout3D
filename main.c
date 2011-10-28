@@ -19,8 +19,8 @@ int pelotaInicial = 1;
 int pelotaSube = 1;
 int pelotaMovHor = 0; // 0 = izq. 1 = der.
 //double barraPosInicialX = -4.45+4.5;0.5f,-29+5+(tmpFila*3)
-double speedZ = 0.05;
-double speedX = 0.01;
+double speedZ = -0.1;
+double speedX = 0.0;
 double cuboX = 0.0;
 double cuboZ = 0.0;
 int gameOver = 0;
@@ -55,6 +55,12 @@ void display(void)
     tmpBloque = (tmpBloque->siguiente);
   }
 
+  if (speedZ <= 0.0) pelotaSube = 1;
+  else pelotaSube = 0;
+
+  if (speedX <= 0.0) pelotaMovHor = 0;
+  else pelotaMovHor = 1;
+
   glPushMatrix();
   if (pelotaInicial) {   // Comienzo del juego
     glTranslatef(0.0,0.5f,3.7);
@@ -63,18 +69,18 @@ void display(void)
   else { // Pelota en Juego
     if (!gameOver) {
       if (pelotaSube) {
-        despPelotaZ -= speedZ; //1.0; //0.05;
+        despPelotaZ += speedZ; //1.0; //0.05;
         if (fabs(despPelotaZ - 0.1 + 5.4) < 0.001)
           pelotaSube = 0;
-      } 
+      }
       else {  // Pelota baja
         despPelotaZ += speedZ; //1.0; //0.05;
         if (despPelotaZ + 0.1 - 3.75 > 0.001)
           pelotaSube = 1;
       }
       if (!pelotaMovHor) { // Movimiento a la Izq.
-        despPelotaX -= speedX; //1.0;
-        if (fabs(despPelotaX - 0.1 + 2.3/*3.2*/) < 0.001) {
+        despPelotaX += speedX; //1.0;
+        if (fabs(despPelotaX + 0.1 + 2.3/*3.2*/) < 0.1) {
           pelotaMovHor = 1;
         }
       }
@@ -210,3 +216,15 @@ int main(int argc, char** argv)
   glutMainLoop();
   return 0;
 }
+
+
+      /* despPelotaZ += speedZ; */
+      /* despPelotaX += speedX; */
+      /* if (despPelotaZ >= 0 && despPelotaZ + 0.01 - 3.8 < 0.1) { */
+      /*   speedZ = -speedZ; */
+      /* } */
+      /* if (despPelotaZ < 0 && despPelotaZ - 0.01 + 3.75 < 0.1) { */
+      /*   speedZ = -speedZ; */
+      /* } */
+      /* glTranslatef(despPelotaX, 0.5f, despPelotaZ); */
+      /* Pelota(); */
