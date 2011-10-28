@@ -1,5 +1,6 @@
 #include "Lector.h"
 #include "Nivel.h"
+#include "utils.h"
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -12,13 +13,17 @@ LisBloque *tmpBloques;
 ElemBloque *tmpBloque;
 ElemNivel *tmpNivel;
 float despDisparador = 0.0;
-float despPelotaZ = 3.7;
-float despPelotaX = 0.0;
+double despPelotaZ = 3.7;
+double despPelotaX = 0.0;
 int pelotaInicial = 1;
 int pelotaSube = 1;
 int pelotaMovHor = 0; // 0 = izq. 1 = der.
-float speedZ = 0.5;
-float speedX = 0.5;
+//double barraPosInicialX = -4.45+4.5;0.5f,-29+5+(tmpFila*3)
+double speedZ = 0.05;
+double speedX = 0.01;
+double cuboX = 0.0;
+double cuboZ = 0.0;
+int gameOver = 0;
 
 void display(void)
 {
@@ -37,16 +42,18 @@ void display(void)
 
   glPushMatrix();
   glTranslatef(despDisparador,0,0);
+  cuboX = -4.45+4.5 + despDisparador;
+  cuboZ = 4.7; //-29+5+(36.5*.4*3);
   cuboMovible (despDisparador);
   glPopMatrix();
 
-  /* tmpBloque = cabezaBloque(tmpBloques); */
-  /* while (tmpBloque != NULL) { */
-  /*   glPushMatrix(); */
-  /*   dibujarBloque(tmpBloque); */
-  /*   glPopMatrix(); */
-  /*   tmpBloque = (tmpBloque->siguiente); */
-  /* } */
+  tmpBloque = cabezaBloque(tmpBloques);
+  while (tmpBloque != NULL) {
+    glPushMatrix();
+    dibujarBloque(tmpBloque);
+    glPopMatrix();
+    tmpBloque = (tmpBloque->siguiente);
+  }
 
   glPushMatrix();
   if (pelotaInicial) {   // Comienzo del juego
@@ -54,31 +61,38 @@ void display(void)
     Pelota();
   }
   else { // Pelota en Juego
-    if (pelotaSube) {
-      despPelotaZ -= speedZ; //1.0; //0.05;
-      if (abs(despPelotaZ + 6.3) < 0.000001)
-        pelotaSube = 0;
-    } 
-    else {  // Pelota baja
-      despPelotaZ += speedZ; //1.0; //0.05;
-      if (despPelotaZ - 3.7 > 0.001 && speedZ*2 > 3.7)
-        pelotaSube = 1;
-    }
-    if (!pelotaMovHor) { // Movimiento a la Izq.
-      despPelotaX -= speedX; //1.0;
-      if (abs(despPelotaX + 3.2) < 0.000001) {
-        pelotaMovHor = 1;
+    if (!gameOver) {
+      if (pelotaSube) {
+        despPelotaZ -= speedZ; //1.0; //0.05;
+        if (fabs(despPelotaZ - 0.1 + 5.4) < 0.001)
+          pelotaSube = 0;
+      } 
+      else {  // Pelota baja
+        despPelotaZ += speedZ; //1.0; //0.05;
+        if (despPelotaZ + 0.1 - 3.75 > 0.001)
+          pelotaSube = 1;
       }
-    }
-    else { // Pelota se mueve la derecha
-      despPelotaX += speedX; //1.0;
-      if (despPelotaX - 2.0 > 0.000001) {
-        pelotaMovHor = 0;
+      if (!pelotaMovHor) { // Movimiento a la Izq.
+        despPelotaX -= speedX; //1.0;
+        if (fabs(despPelotaX - 0.1 + 2.3/*3.2*/) < 0.001) {
+          pelotaMovHor = 1;
+        }
+      }
+      else { // Pelota se mueve la derecha
+        despPelotaX += speedX; //1.0;
+        if (despPelotaX + 0.1 - 2.3 /*2.0*/ > 0.001) {
+          pelotaMovHor = 0;
+        }
+      }
+      glTranslatef(despPelotaX, 0.5f, despPelotaZ);
+      // Chequear si pelota viene en dirección a la barra
+      if (cmpCoord2D(despPelotaX, despPelotaZ, cuboX, cuboZ) == 0)
+        Pelota();
+      else {
+        gameOver = 1;
       }
     }
   }
-  glTranslatef(despPelotaX, 0.5f, despPelotaZ);
-  Pelota();
   glutPostRedisplay();
   glPopMatrix();
   
@@ -96,16 +110,30 @@ teclaDisparar()
 void
 teclaDerecha ()
 {
-  if (despDisparador < 1.9)
-    despDisparador += 0.09;
+  if (!pelotaInicial)
+    if (despDisparador < 1.9)
+      despDisparador += 0.5;
   return;
+}
+
+void 
+teclaReiniciar ()
+{
+  pelotaInicial = 1;
+  gameOver = 0;
+  despPelotaZ = 3.7;
+  despPelotaX = 0.0;
+  pelotaSube = 1;
+  pelotaMovHor = 0;
+  despDisparador = 0;
 }
 
 void
 teclaIzquierda ()
 {
-  if (despDisparador > -1.9)
-    despDisparador -= 0.09;
+  if (!pelotaInicial)
+    if (despDisparador > -1.9)
+      despDisparador -= 0.5;
   return;
 }
 
@@ -123,8 +151,11 @@ keyboard (unsigned char key, int x, int y)
       glutPostRedisplay();
       break;
     case 32:
-      printf("teclearon espacio \n");
       teclaDisparar();
+      glutPostRedisplay();
+      break;
+    case 'r': case 'R':
+      teclaReiniciar();
       glutPostRedisplay();
       break;
     default:
