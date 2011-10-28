@@ -64,7 +64,7 @@ void dibujarTablero ()
   glPushMatrix();
   glLineWidth(2);
   glColor3f (0.0, 0.0, 0.0);
-  glTranslatef(0.0,0.0,-4.95);
+  glTranslatef(0.0,0.0,-4.98);
   glScalef(2.5,1.1,1.0);
   glBegin (GL_LINE_LOOP);
   glVertex3f(1.0,0.0,-1.0); // vo
