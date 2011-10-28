@@ -7,7 +7,6 @@ test
 semantic.cache
 *.*~
 .\#*
-test*
 prueba.txt
 prueba2.txt
 TODO
