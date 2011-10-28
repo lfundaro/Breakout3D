@@ -16,6 +16,9 @@ float despPelotaZ = 3.7;
 float despPelotaX = 0.0;
 int pelotaInicial = 1;
 int pelotaSube = 1;
+int pelotaMovHor = 0; // 0 = izq. 1 = der.
+float speedZ = 0.5;
+float speedX = 0.5;
 
 void display(void)
 {
@@ -28,7 +31,7 @@ void display(void)
   // gluLookAt (0.0, 8.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
   //  gluLookAt (0.0, 5.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
   // gluLookAt (0.0, 5.0, 8.0, 0.0, 3.0, 0.0, 0.0, 2.0, -1.0);
-   gluLookAt (0.0, 8.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+  gluLookAt (0.0, 8.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
   // Vista recta
   //   gluLookAt (10, 7, -3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
 
@@ -45,27 +48,38 @@ void display(void)
   /*   tmpBloque = (tmpBloque->siguiente); */
   /* } */
 
-   glPushMatrix();
-  if (pelotaInicial) {
+  glPushMatrix();
+  if (pelotaInicial) {   // Comienzo del juego
     glTranslatef(0.0,0.5f,3.7);
     Pelota();
   }
-  else {
-    despPelotaX = 0.0;
+  else { // Pelota en Juego
     if (pelotaSube) {
-      despPelotaZ -= 0.05;
-      if (abs(despPelotaZ + 6.3) < 0.001)
+      despPelotaZ -= speedZ; //1.0; //0.05;
+      if (abs(despPelotaZ + 6.3) < 0.000001)
         pelotaSube = 0;
     } 
     else {  // Pelota baja
-      despPelotaZ += 0.05;
-      if (despPelotaZ - 3.7 > 0.001)
+      despPelotaZ += speedZ; //1.0; //0.05;
+      if (despPelotaZ - 3.7 > 0.001 && speedZ*2 > 3.7)
         pelotaSube = 1;
     }
-    glTranslatef(despPelotaX, 0.5f, despPelotaZ);
-    Pelota();
-    glutPostRedisplay();
+    if (!pelotaMovHor) { // Movimiento a la Izq.
+      despPelotaX -= speedX; //1.0;
+      if (abs(despPelotaX + 3.2) < 0.000001) {
+        pelotaMovHor = 1;
+      }
+    }
+    else { // Pelota se mueve la derecha
+      despPelotaX += speedX; //1.0;
+      if (despPelotaX - 2.0 > 0.000001) {
+        pelotaMovHor = 0;
+      }
+    }
   }
+  glTranslatef(despPelotaX, 0.5f, despPelotaZ);
+  Pelota();
+  glutPostRedisplay();
   glPopMatrix();
   
   dibujarTablero (despDisparador);
