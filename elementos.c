@@ -8,8 +8,8 @@ dibujarTablero()
   /* Base del tablero */
   glBegin(GL_QUADS);
   glVertex3d(0.0,0.0,0.0); // vo
-  glVertex3d(0.0,8.5,0.0); // v2
-  glVertex3d(3.0,8.5,0.0); // v3
+  glVertex3d(0.0,7.0,0.0); // v2
+  glVertex3d(3.0,7.0,0.0); // v3
   glVertex3d(3.0,0.0,0.0); // v4
   glEnd();
 
@@ -126,6 +126,7 @@ dibujarDisparador()
   glVertex3f(0.0,0.0,0.099);
   glEnd();
   glPopMatrix();
+  glColor3f(0.3,0.3,1.0);
   /* Cara derecha */
   glBegin(GL_QUADS);
   glVertex3f(0.5,0.0,0.0);
@@ -135,10 +136,10 @@ dibujarDisparador()
   glEnd();
   /* Cara izquierda */
   glBegin(GL_QUADS);
-  glVertex3f(0.5,0.0,0.0);
-  glVertex3f(0.5,0.0,0.09);
-  glVertex3f(0.5,0.09,0.09);
-  glVertex3f(0.5,0.09,0.0);
+  glVertex3f(0.0,0.00,0.0);
+  glVertex3f(0.0,0.0,0.09);
+  glVertex3f(0.0,0.09,0.09);
+  glVertex3f(0.0,0.09,0.0);
   glEnd();  
   
   /**** Contornos ****/
@@ -170,40 +171,93 @@ dibujarDisparador()
 
   /* Cara Izquierda */
   glBegin(GL_LINE_LOOP);
-  glVertex3f(0.5,0.0,0.0);
-  glVertex3f(0.5,0.0,0.09);
-  glVertex3f(0.5,0.09,0.09);
-  glVertex3f(0.5,0.09,0.0);
+  glVertex3f(0.0,0.00,0.0);
+  glVertex3f(0.0,0.0,0.09);
+  glVertex3f(0.0,0.09,0.09);
+  glVertex3f(0.0,0.09,0.0);
   glEnd();
   glPopMatrix();
-
-  
-  
-  /* /\* Cubo Disparador *\/ */
-  /* glPushMatrix(); */
-  /* glColor3f(0.3,0.3,1.0); */
-  /* glPushMatrix(); */
-  /* glScalef(4.0,0.5,1.0); */
-  /* glTranslatef(0.05+0.0,0.05,0.05); */
-  /* glutSolidCube(0.1); */
-  /* glPopMatrix(); */
-  /* /\* Area de golpe *\/ */
-  /* glPushMatrix(); */
-  /* glColor3f(0.1,0.1,0.1); */
-  /* glScalef(1.0,0.5,1.1); */
-  /* glTranslatef(0.2,0.05,0.05); */
-  /* glutSolidCube(0.1); */
-  /* glPopMatrix(); */
-  /* /\* Contorno *\/  */
-  /* glColor3f(0.0,0.0,0.0); */
-  /* glPushMatrix(); */
-  /* glScalef(4.0,0.5,1.0); */
-  /* glTranslatef(0.05,0.05,0.05); */
-  /* glLineWidth(3.0); */
-  /* glutWireCube(0.1); */
-  /* glPopMatrix(); */
-  /* glPopMatrix(); */
 }
+
+void
+dibujarPelota()
+{
+  glColor3f(0.4,0.4,0.4);
+  glutSolidSphere(0.05,10,10);
+  return;
+}
+
+void
+moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
+            GLfloat *despPelotaY)
+{
+  if (*speedY >= 0)
+    {
+      // Límite Banda Superior
+      if (*despPelotaY < 6.95) 
+        {
+          *despPelotaY += *speedY;
+        }
+      else 
+        {
+          *speedY = -*speedY;
+        }
+    }
+  else    // Pelota Baja
+    {
+      // Límite Banda Inferior
+      if (*despPelotaY > 0.22)
+        {
+          *despPelotaY += *speedY;
+        }
+      else 
+        {
+          *speedY = -*speedY;
+        }
+    }
+  // Pelota se mueve lateralmente
+  if (*speedX >= 0)
+    {
+      // Límite banda derecha
+      if (*despPelotaX < 2.90)
+        {
+          *despPelotaX += *speedX;
+        }
+      else
+        {
+          *speedX = -*speedX;
+        }
+    }
+  // Límite banda izquierda
+  else      
+    {
+      if (*despPelotaX > 0.09)
+        {
+          *despPelotaX += *speedX;
+        }
+      else
+        {
+          *speedX = -*speedX;
+        }
+    }
+  glTranslatef(*despPelotaX,*despPelotaY,0.0);
+  dibujarPelota();
+  glutPostRedisplay();
+}
+
+
+
+/* void */
+/* Pelota (double despPelota)  */
+/* { */
+/*   glColor3f(0.4,0.4,0.4); */
+/*   glPushMatrix(); */
+/*   glutSolidSphere(0.1,50,50); */
+/*   glPopMatrix(); */
+/*   return; */
+/* } */
+
+
 
 /*   glPushMatrix(); */
 /*   glColor3d(0.0,1.0,0.0); */
@@ -271,16 +325,6 @@ dibujarDisparador()
 /*   glutWireCube(1); */
 /* } */
 
-
-/* void */
-/* Pelota (double despPelota)  */
-/* { */
-/*   glColor3f(0.4,0.4,0.4); */
-/*   glPushMatrix(); */
-/*   glutSolidSphere(0.1,50,50); */
-/*   glPopMatrix(); */
-/*   return; */
-/* } */
 
 
  

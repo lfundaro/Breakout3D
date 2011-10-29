@@ -12,17 +12,15 @@ LisNivel *juego;
 LisBloque *tmpBloques;
 ElemBloque *tmpBloque;
 ElemNivel *tmpNivel;
-float despDisparador = 0.0;
-double despPelotaZ = 3.7;
-double despPelotaX = 0.0;
+float despDisparadorX = 0.0;
+GLfloat despPelotaY = 0.10;
+GLfloat despPelotaX = 1.50;
 int pelotaInicial = 1;
 int pelotaSube = 1;
 int pelotaMovHor = 0; // 0 = izq. 1 = der.
 //double barraPosInicialX = -4.45+4.5;0.5f,-29+5+(tmpFila*3)
-double speedZ = -0.1;
-double speedX = 0.0;
-double cuboX = 0.0;
-double cuboZ = 0.0;
+GLfloat speedX = -0.08;
+GLfloat speedY = -0.01;
 int gameOver = 0;
 
 void 
@@ -41,8 +39,25 @@ display(void)
   dibujarTablero();
 
   /* Barra Disparadora */
-  dibujarDisparador();
+  glPushMatrix();
+  glTranslatef(despDisparadorX,0.0,0.0);
+  dibujarDisparador(despDisparadorX);
+  glPopMatrix();
 
+  /* Pelota */
+  glPushMatrix();
+  if (pelotaInicial)  // Inicio de juego
+    {
+      glTranslatef(1.50,0.10,0.10);
+      dibujarPelota();
+    }
+  else  // Juego comenzado
+    {
+      moverPelota(&speedX,&speedY,&despPelotaX,
+                  &despPelotaY);
+    }
+  glPopMatrix();
+  
   glutSwapBuffers();
   glFlush();
   return;
@@ -57,9 +72,16 @@ teclaDisparar()
 void
 teclaDerecha ()
 {
-  if (!pelotaInicial)
-    if (despDisparador < 1.9)
-      despDisparador += 0.5;
+  if (despDisparadorX <= 1.20)
+    despDisparadorX += 0.08;
+  return;
+}
+
+void
+teclaIzquierda ()
+{
+  if (despDisparadorX >= -1.20)
+    despDisparadorX -= 0.08;
   return;
 }
 
@@ -68,20 +90,11 @@ teclaReiniciar ()
 {
   pelotaInicial = 1;
   gameOver = 0;
-  despPelotaZ = 3.7;
   despPelotaX = 0.0;
+  despPelotaY = 3.7;
   pelotaSube = 1;
   pelotaMovHor = 0;
-  despDisparador = 0;
-}
-
-void
-teclaIzquierda ()
-{
-  if (!pelotaInicial)
-    if (despDisparador > -1.9)
-      despDisparador -= 0.5;
-  return;
+  despDisparadorX = 0.0;
 }
 
 void

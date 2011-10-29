@@ -7,5 +7,16 @@ void
 dibujarTablero ();
 
 void 
+dibujarDisparador();
+
+void
+dibujarPelota();
+
+
+void
+moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
+            GLfloat *despPelotaY);
+
+void 
 cuboMovible (double desp);
 
