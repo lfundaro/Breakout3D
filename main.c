@@ -16,11 +16,8 @@ GLfloat despDisparadorX = 0.0;
 GLfloat despPelotaY = 0.10;
 GLfloat despPelotaX = 1.50;
 int pelotaInicial = 1;
-int pelotaSube = 1;
-int pelotaMovHor = 0; // 0 = izq. 1 = der.
-//double barraPosInicialX = -4.45+4.5;0.5f,-29+5+(tmpFila*3)
 GLfloat speedX = 0.08;
-GLfloat speedY = 0.02;
+GLfloat speedY = 0.08;
 int gameOver = 0;
 GLfloat xTablero = 3.0;
 GLfloat yTablero = 5.5;
@@ -30,6 +27,7 @@ GLfloat zDisparador = 0.12;
 GLfloat xCubo = 0.3;
 GLfloat yCubo = 0.12;
 GLfloat zCubo = 0.12;
+GLint movInicial = 1;
 
 void 
 display(void) 
@@ -58,12 +56,13 @@ display(void)
   if (pelotaInicial)  // Inicio de juego
     {
       glTranslatef(1.50+despDisparadorX,0.10,0.10);
-      //  dibujarPelota();
+      dibujarPelota();
     }
   else  // Juego comenzado
     {
       moverPelota(&speedX,&speedY,&despPelotaX,
-                  &despPelotaY, despDisparadorX);
+                  &despPelotaY, despDisparadorX,
+                  &movInicial);
     }
   glPopMatrix();
   
@@ -101,8 +100,6 @@ teclaReiniciar ()
   gameOver = 0;
   despPelotaX = 0.0;
   despPelotaY = 3.7;
-  pelotaSube = 1;
-  pelotaMovHor = 0;
   despDisparadorX = 0.0;
 }
 
