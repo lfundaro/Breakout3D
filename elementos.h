@@ -4,10 +4,10 @@
 
 // Función que dibuja el tablero
 void 
-dibujarTablero ();
+dibujarTablero (GLfloat *x, GLfloat *y);
 
 void 
-dibujarDisparador();
+dibujarDisparador(GLfloat *x, GLfloat *y, GLfloat *z);
 
 void
 dibujarPelota();
@@ -15,7 +15,7 @@ dibujarPelota();
 
 void
 moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
-            GLfloat *despPelotaY);
+            GLfloat *despPelotaY, GLfloat despDisparadorX);
 
 void 
 cuboMovible (double desp);

@@ -12,16 +12,24 @@ LisNivel *juego;
 LisBloque *tmpBloques;
 ElemBloque *tmpBloque;
 ElemNivel *tmpNivel;
-float despDisparadorX = 0.0;
+GLfloat despDisparadorX = 0.0;
 GLfloat despPelotaY = 0.10;
 GLfloat despPelotaX = 1.50;
 int pelotaInicial = 1;
 int pelotaSube = 1;
 int pelotaMovHor = 0; // 0 = izq. 1 = der.
 //double barraPosInicialX = -4.45+4.5;0.5f,-29+5+(tmpFila*3)
-GLfloat speedX = -0.08;
-GLfloat speedY = -0.01;
+GLfloat speedX = 0.08;
+GLfloat speedY = 0.02;
 int gameOver = 0;
+GLfloat xTablero = 3.0;
+GLfloat yTablero = 5.5;
+GLfloat xDisparador = 0.5;
+GLfloat yDisparador = 0.12;
+GLfloat zDisparador = 0.12;
+GLfloat xCubo = 0.3;
+GLfloat yCubo = 0.12;
+GLfloat zCubo = 0.12;
 
 void 
 display(void) 
@@ -30,31 +38,32 @@ display(void)
   glMatrixMode(GL_MODELVIEW);
   /* Coordenadas del sistema */
   glLoadIdentity();
+  //  gluLookAt (0.0, -3.0, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   gluLookAt (0.0, -3.0, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   glTranslatef(-1.5,-2.0,0.0);
 
   /* Dibujo de objetos */ 
 
   /* Tablero */
-  dibujarTablero();
+  dibujarTablero(&xTablero,&yTablero);
 
   /* Barra Disparadora */
   glPushMatrix();
   glTranslatef(despDisparadorX,0.0,0.0);
-  dibujarDisparador(despDisparadorX);
+  dibujarDisparador(&xDisparador,&yDisparador,&zDisparador);
   glPopMatrix();
 
   /* Pelota */
   glPushMatrix();
   if (pelotaInicial)  // Inicio de juego
     {
-      glTranslatef(1.50,0.10,0.10);
-      dibujarPelota();
+      glTranslatef(1.50+despDisparadorX,0.10,0.10);
+      //  dibujarPelota();
     }
   else  // Juego comenzado
     {
       moverPelota(&speedX,&speedY,&despPelotaX,
-                  &despPelotaY);
+                  &despPelotaY, despDisparadorX);
     }
   glPopMatrix();
   

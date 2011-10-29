@@ -2,26 +2,26 @@
 #include "Nivel.h"
 
 void 
-dibujarTablero() 
+dibujarTablero(GLfloat *x, GLfloat *y) 
 {
   glColor3f(0.5,0.5,0.5); // Blanco
   /* Base del tablero */
   glBegin(GL_QUADS);
   glVertex3d(0.0,0.0,0.0); // vo
-  glVertex3d(0.0,7.0,0.0); // v2
-  glVertex3d(3.0,7.0,0.0); // v3
-  glVertex3d(3.0,0.0,0.0); // v4
+  glVertex3d(0.0,*y,0.0); // v2
+  glVertex3d(*x,*y,0.0); // v3
+  glVertex3d(*x,0.0,0.0); // v4
   glEnd();
 
   /* Banda Frontal */
   glPushMatrix();
   glColor3f(1.0,0.0,0.0);
-  glTranslatef(0.0,7.0,0.0);
+  glTranslatef(0.0,*y,0.0);
   glBegin(GL_QUADS);
   glVertex3d(0.0,0.0,0.0); // vo
   glVertex3d(0.0,0.1,0.1); // v2
-  glVertex3d(3.0,0.1,0.1); // v3
-  glVertex3d(3.0,0.0,0.0); // v4
+  glVertex3d(*x,0.1,0.1); // v3
+  glVertex3d(*x,0.0,0.0); // v4
   glEnd();
   glPopMatrix();
 
@@ -29,12 +29,12 @@ dibujarTablero()
   glPushMatrix();
   glColor3f(0.0,0.0,0.0);
   glLineWidth(3);
-  glTranslatef(0.0,6.998,0.0);
+  glTranslatef(0.0,*y - 0.002,0.0);
   glBegin(GL_LINE_LOOP);
   glVertex3d(0.0,0.0,0.0); // vo
   glVertex3d(0.0,0.1,0.1); // v2
-  glVertex3d(3.0,0.1,0.1); // v3
-  glVertex3d(3.0,0.0,0.0); // v4
+  glVertex3d(*x,0.1,0.1); // v3
+  glVertex3d(*x,0.0,0.0); // v4
   glEnd();
   glPopMatrix();
   
@@ -44,8 +44,8 @@ dibujarTablero()
   glBegin(GL_QUADS);
   glVertex3f(0.0,0.0,0.0);
   glVertex3f(0.0,0.1,0.1);
-  glVertex3f(0.0,7.0,0.1);
-  glVertex3f(0.0,7.0,0.0);
+  glVertex3f(0.0,*y,0.1);
+  glVertex3f(0.0,*y,0.0);
   glEnd();
   glPopMatrix();
 
@@ -57,20 +57,20 @@ dibujarTablero()
   glBegin(GL_LINE_LOOP);
   glVertex3f(0.0,0.0,0.0);
   glVertex3f(0.0,0.0,0.1);
-  glVertex3f(0.0,7.0,0.1);
-  glVertex3f(0.0,7.0,0.0);
+  glVertex3f(0.0,*y,0.1);
+  glVertex3f(0.0,*y,0.0);
   glEnd();
   glPopMatrix();
 
   /* Banda Lateral Derecha */
   glPushMatrix();
   glColor3f(1.0,0.0,0.0);
-  glTranslated(3.0,0.0,0.0);
+  glTranslated(*x,0.0,0.0);
   glBegin(GL_QUADS);
   glVertex3f(0.0,0.0,0.0);
   glVertex3f(0.0,0.1,0.1);
-  glVertex3f(0.0,7.0,0.1);
-  glVertex3f(0.0,7.0,0.0);
+  glVertex3f(0.0,*y,0.1);
+  glVertex3f(0.0,*y,0.0);
   glEnd();
   glPopMatrix();
 
@@ -78,18 +78,18 @@ dibujarTablero()
   glPushMatrix();
   glColor3f(0.0,0.0,0.0);
   glLineWidth(5);
-  glTranslatef(2.995,0.0,0.0);
+  glTranslatef(*x - 0.005,0.0,0.0);
   glBegin(GL_LINE_LOOP);
   glVertex3f(0.0,0.0,0.0);
   glVertex3f(0.0,0.1,0.1);
-  glVertex3f(0.0,7.0,0.1);
-  glVertex3f(0.0,7.0,0.0);
+  glVertex3f(0.0,*y,0.1);
+  glVertex3f(0.0,*y,0.0);
   glEnd();
   glPopMatrix();
 }
 
 void
-dibujarDisparador()
+dibujarDisparador(GLfloat *x, GLfloat *y, GLfloat *z)
 {
   glTranslatef(1.25,0.0,0.0);
   glColor3f(0.3,0.3,1.0);
@@ -97,50 +97,54 @@ dibujarDisparador()
   /* Frontal */
   glBegin(GL_QUADS);
   glVertex3f(0.0,0.0,0.0);
-  glVertex3f(0.5,0.0,0.0);
-  glVertex3f(0.5,0.0,0.09);
-  glVertex3f(0.0,0.0,0.09);
+  glVertex3f(*x,0.0,0.0);
+  glVertex3f(*x,0.0,*z);
+  glVertex3f(0.0,0.0,*z);
   glEnd();
   /* Techo */
+  glColor3f(1.0,1.0,1.0);
   glBegin(GL_QUADS);
-  glVertex3f(0.0,0.0,0.09);
-  glVertex3f(0.5,0.0,0.09);
-  glVertex3f(0.5,0.09,0.09);
-  glVertex3f(0.0,0.09,0.09);
+  glVertex3f(0.0,0.0,*z);
+  glVertex3f(*x,0.0,*z);
+  glVertex3f(*x,*y,*z);
+  glVertex3f(0.0,*y,*z);
   glEnd();
-  /* Disparador */
-  glPushMatrix();
-  glColor3f(0.2,0.2,0.3);
-  glTranslatef(0.15,0.0,0.0);
-  glBegin(GL_QUADS);
-  glVertex3f(0.0,0.0,0.099);
-  glVertex3f(0.2,0.0,0.099);
-  glVertex3f(0.2,0.09,0.099);
-  glVertex3f(0.0,0.09,0.099);
-  glEnd();  
-  glColor3f(0.2,0.25,0.3);
-  glBegin(GL_QUADS);
-  glVertex3f(0.0,0.0,0.0);
-  glVertex3f(0.2,0.0,0.0);
-  glVertex3f(0.2,0.0,0.099);
-  glVertex3f(0.0,0.0,0.099);
-  glEnd();
-  glPopMatrix();
   glColor3f(0.3,0.3,1.0);
+
+  /* /\* Disparador *\/ */
+  /* glPushMatrix(); */
+  /* glColor3f(0.2,0.2,0.3); */
+  /* glTranslatef(0.15,0.0,0.0); */
+  /* glBegin(GL_QUADS); */
+  /* glVertex3f(0.0,0.0,0.099); */
+  /* glVertex3f(0.2,0.0,0.099); */
+  /* glVertex3f(0.2,0.09,0.099); */
+  /* glVertex3f(0.0,0.09,0.099); */
+  /* glEnd(); */
+  /* glColor3f(0.2,0.25,0.3); */
+  /* glBegin(GL_QUADS); */
+  /* glVertex3f(0.0,0.0,0.0); */
+  /* glVertex3f(0.2,0.0,0.0); */
+  /* glVertex3f(0.2,0.0,0.099); */
+  /* glVertex3f(0.0,0.0,0.099); */
+  /* glEnd(); */
+  /* glPopMatrix(); */
+
+
   /* Cara derecha */
   glBegin(GL_QUADS);
-  glVertex3f(0.5,0.0,0.0);
-  glVertex3f(0.5,0.0,0.09);
-  glVertex3f(0.5,0.09,0.09);
-  glVertex3f(0.5,0.09,0.0);
+  glVertex3f(*x,0.0,0.0);
+  glVertex3f(*x,0.0,*z);
+  glVertex3f(*x,*y,*z);
+  glVertex3f(*x,*y,0.0);
   glEnd();
   /* Cara izquierda */
   glBegin(GL_QUADS);
   glVertex3f(0.0,0.00,0.0);
-  glVertex3f(0.0,0.0,0.09);
-  glVertex3f(0.0,0.09,0.09);
-  glVertex3f(0.0,0.09,0.0);
-  glEnd();  
+  glVertex3f(0.0,0.0,*z);
+  glVertex3f(0.0,*y,*z);
+  glVertex3f(0.0,*y,0.0);
+  glEnd();
   
   /**** Contornos ****/
   /* Frontal */
@@ -148,33 +152,33 @@ dibujarDisparador()
   glColor3f(0.0,0.0,0.0);
   glBegin(GL_LINE_LOOP);
   glVertex3f(0.0,0.0,0.0);
-  glVertex3f(0.5,0.0,0.0);
-  glVertex3f(0.5,0.0,0.09);
-  glVertex3f(0.0,0.0,0.09);
+  glVertex3f(*x,0.0,0.0);
+  glVertex3f(*x,0.0,*z);
+  glVertex3f(0.0,0.0,*z);
   glEnd();
 
   /* Techo */
   glBegin(GL_LINE_LOOP);
-  glVertex3f(0.0,0.0,0.09);
-  glVertex3f(0.5,0.0,0.09);
-  glVertex3f(0.5,0.09,0.09);
-  glVertex3f(0.0,0.09,0.09);
+  glVertex3f(0.0,0.0,*z);
+  glVertex3f(*x,0.0,*z);
+  glVertex3f(*x,*y,*z);
+  glVertex3f(0.0,*y,*z);
   glEnd();
 
   /* Cara derecha */
   glBegin(GL_LINE_LOOP);
-  glVertex3f(0.5,0.0,0.0);
-  glVertex3f(0.5,0.0,0.09);
-  glVertex3f(0.5,0.09,0.09);
-  glVertex3f(0.5,0.09,0.0);
+  glVertex3f(*x,0.0,0.0);
+  glVertex3f(*x,0.0,*z);
+  glVertex3f(*x,*y,*z);
+  glVertex3f(*x,*y,0.0);
   glEnd();
 
   /* Cara Izquierda */
   glBegin(GL_LINE_LOOP);
   glVertex3f(0.0,0.00,0.0);
-  glVertex3f(0.0,0.0,0.09);
-  glVertex3f(0.0,0.09,0.09);
-  glVertex3f(0.0,0.09,0.0);
+  glVertex3f(0.0,0.0,*z);
+  glVertex3f(0.0,*y,*z);
+  glVertex3f(0.0,*y,0.0);
   glEnd();
   glPopMatrix();
 }
@@ -189,8 +193,10 @@ dibujarPelota()
 
 void
 moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
-            GLfloat *despPelotaY)
+            GLfloat *despPelotaY, GLfloat despDisparadorX)
 {
+  *despPelotaX += despDisparadorX;
+  printf("despPelotaX = %f", *despPelotaX);
   if (*speedY >= 0)
     {
       // Límite Banda Superior
