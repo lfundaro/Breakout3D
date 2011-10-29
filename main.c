@@ -7,6 +7,8 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
+#include <time.h>
 
 LisNivel *juego;
 LisBloque *tmpBloques;
@@ -31,7 +33,6 @@ GLint vidas = 3;
 GLfloat speedX = -0.01;
 GLfloat speedY = 0.03;
 GLfloat deltaXdisparador = 1.5;
-
 
 void
 reiniciarJuego()
@@ -113,6 +114,17 @@ display(void)
   glutSwapBuffers();
   glFlush();
 
+  return;
+}
+
+void
+direccionDisparo(GLfloat *speedX, GLfloat *speedY)
+{
+  float grado;
+  grado = (float) (rand() % 11 + 85);
+  printf ("grado = %f\n",grado);
+  *speedX = ((int) cosf(grado))*(*speedX);
+  *speedY = ((int) sinf(grado))*(*speedY);
   return;
 }
 
@@ -199,7 +211,7 @@ int main(int argc, char** argv)
   tmpNivel = (ElemNivel*)malloc(sizeof(ElemNivel));
   tmpNivel = cabezaNivel(juego);
   tmpBloques = bloquesNivel(tmpNivel->nivel);
-
+  srand(time(NULL));
   /* Inicialización de ventana */
   glutInit(&argc, argv);
   glutInitDisplayMode (GLUT_RGB |  GLUT_DEPTH | GLUT_DOUBLE );
