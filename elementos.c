@@ -327,11 +327,11 @@ void dibujarBloque(ElemBloque *tmpBloque) {
   }
   //  glTranslatef(baseX+(tmpColumna*tamX),baseY-(tmpFila*tamY),baseZ);
   glTranslatef(baseX+(tmpColumna*tamX),baseY-(tmpFila*tamY),baseZ);
-  glScalef(tamX,tamY,tamZ);
+  glScalef(tamX-0.01,tamY-0.01,tamZ-0.01);
   glColor3f(r,g,b);
   glutSolidCube(1);
   glColor3f(0.2,0.2,0.2);
-  glLineWidth(1);
+  glLineWidth(2);
   glutWireCube(1);
 }
 
