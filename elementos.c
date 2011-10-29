@@ -193,12 +193,12 @@ dibujarPelota()
 
 void
 moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
-            GLfloat *despPelotaY, GLfloat despDisparadorX,
+            GLfloat *despPelotaY, GLfloat *despDisparadorX,
             GLint *movInicial)
 {
-  /* /\* if (*movInicial) *\/ */
-  /* /\*   *despPelotaX += despDisparadorX; *\/ */
-  /* *movInicial = 0; */
+  if (*movInicial)
+    *despPelotaX += *despDisparadorX;
+  *movInicial = 0;
   if (*speedY >= 0)
     {
       // Límite Banda Superior

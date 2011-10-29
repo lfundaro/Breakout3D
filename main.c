@@ -70,7 +70,7 @@ display(void)
   else  // Juego comenzado
     {
       moverPelota(&speedX,&speedY,&despPelotaX,
-                  &despPelotaY, despDisparadorX,
+                  &despPelotaY, &despDisparadorX,
                   &movInicial);
     }
   glPopMatrix();
