@@ -1,5 +1,7 @@
 #include "elementos.h"
 #include "Nivel.h"
+#include <stdio.h>
+#include <math.h>
 
 void 
 dibujarTablero(GLfloat *x, GLfloat *y) 
@@ -102,7 +104,7 @@ dibujarDisparador(GLfloat *x, GLfloat *y, GLfloat *z)
   glVertex3f(0.0,0.0,*z);
   glEnd();
   /* Techo */
-  glColor3f(1.0,1.0,1.0);
+  glColor3f(0.3,0.3,1.0);
   glBegin(GL_QUADS);
   glVertex3f(0.0,0.0,*z);
   glVertex3f(*x,0.0,*z);
@@ -111,24 +113,24 @@ dibujarDisparador(GLfloat *x, GLfloat *y, GLfloat *z)
   glEnd();
   glColor3f(0.3,0.3,1.0);
 
-  /* /\* Disparador *\/ */
-  /* glPushMatrix(); */
-  /* glColor3f(0.2,0.2,0.3); */
-  /* glTranslatef(0.15,0.0,0.0); */
-  /* glBegin(GL_QUADS); */
-  /* glVertex3f(0.0,0.0,0.099); */
-  /* glVertex3f(0.2,0.0,0.099); */
-  /* glVertex3f(0.2,0.09,0.099); */
-  /* glVertex3f(0.0,0.09,0.099); */
-  /* glEnd(); */
-  /* glColor3f(0.2,0.25,0.3); */
-  /* glBegin(GL_QUADS); */
-  /* glVertex3f(0.0,0.0,0.0); */
-  /* glVertex3f(0.2,0.0,0.0); */
-  /* glVertex3f(0.2,0.0,0.099); */
-  /* glVertex3f(0.0,0.0,0.099); */
-  /* glEnd(); */
-  /* glPopMatrix(); */
+  /* Disparador */
+  glPushMatrix();
+  glColor3f(0.2,0.2,0.3);
+  glTranslatef((*x/2.0)-((*x/2.0)/3),0.0,0.0);
+  glBegin(GL_QUADS);
+  glVertex3f(0.0,0.0,*z + 0.009);
+  glVertex3f(*x/3.0,0.0,*z + 0.009);
+  glVertex3f(*x/3.0,*z,*z + 0.009);
+  glVertex3f(0.0,*z,*z + 0.009);
+  glEnd();
+  glColor3f(0.2,0.25,0.3);
+  glBegin(GL_QUADS);
+  glVertex3f(0.0,0.0,0.0);
+  glVertex3f(*x/3.0,0.0,0.0);
+  glVertex3f(*x/3.0,-0.00009,*z);
+  glVertex3f(0.0,-0.00009,*z);
+  glEnd();
+  glPopMatrix();
 
 
   /* Cara derecha */
@@ -193,14 +195,17 @@ dibujarPelota()
 
 void
 moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
-            GLfloat *despPelotaY, GLfloat despDisparadorX)
+            GLfloat *despPelotaY, GLfloat *despDisparadorX,
+            GLint *movInicial, GLfloat *xDisparador, 
+            GLfloat *yDisparador, GLint *vidas)
 {
-  *despPelotaX += despDisparadorX;
-  printf("despPelotaX = %f", *despPelotaX);
+  if (*movInicial)
+    *despPelotaX += *despDisparadorX;
+  *movInicial = 0;
   if (*speedY >= 0)
     {
       // Límite Banda Superior
-      if (*despPelotaY < 6.95) 
+      if (*despPelotaY < 5.495) 
         {
           *despPelotaY += *speedY;
         }
@@ -247,8 +252,37 @@ moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
         }
     }
   glTranslatef(*despPelotaX,*despPelotaY,0.0);
-  dibujarPelota();
+  // Chequear si pelota choca con base
+  int proximidadY = fabs(*despPelotaY - 0.20) <= 0.01;
+  //  printf ("proximidad %d\n",proximidad);
+  GLfloat dist = 0.0;
+  if (proximidadY)
+    {
+      //      printf("PelotaY = %f \n",*despPelotaY);
+      // printf ("Xdisparador = %f\n",*xDisparador);
+      //      dist = fabsf(*despPelotaX + 0.05 - (*xDisparador - 0.25);
+      printf ("coordX Pelota = %f\n",*despPelotaX);
+      printf ("coordX Disparador = %f\n",*xDisparador);
+      if (*despPelotaX <= (*xDisparador + 0.25) && 
+          *despPelotaX >= (*xDisparador - 0.25))
+        {
+          dibujarPelota();
+          glutPostRedisplay();
+          return;
+        }
+      else
+        {
+          --(*vidas);
+          printf ("vidas = %d\n",*vidas);
+          return;
+        }
+    }
+  else
+    {
+      dibujarPelota();
+    }
   glutPostRedisplay();
+  return;
 }
 
 

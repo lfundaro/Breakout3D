@@ -19,7 +19,7 @@ Lector.o: Lector.c
 Nivel.o: Nivel.c
 	$(GCC) $(OPS) -c Nivel.c
 
-utils.o: utils.o
+utils.o: utils.c
 	$(GCC) $(OPS) -c utils.c
 
 test: 
