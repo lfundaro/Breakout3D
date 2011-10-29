@@ -31,6 +31,7 @@ void iniLisNivel(LisNivel *lista,int vida, int frio, int salto){
   lista->vida = vida;
   lista->enfriamiento = frio;
   lista->salto = salto;
+  lista->puntuacion = 0;
   lista->numElementos = 0;
   lista->primero = NULL;
   lista->ultimo = NULL;
@@ -68,6 +69,15 @@ void liberarLisNivel(LisNivel *lista) {
   free(lista);
 }
 
+extern void modificarVida(LisNivel *lista, int factor) {
+  lista->vida += factor;
+}
+
+extern void modificarPunt(LisNivel *lista, int factor) {
+
+  lista->puntuacion += factor;
+}
+
 int numNivel(Nivel *nivel) {
   return (nivel->num);
 }
@@ -100,13 +110,35 @@ extern int salto(LisNivel *niveles){
   return (niveles->salto);
 }
 
-
 void iniBloque(Bloque *bloque, int fila, int columna, char color) {
+  int valor, impactos;
+  switch (color) {
+  case 'n': case 'N':
+    valor = 30; impactos = 3;
+    break;
+  case 'r': case 'R':
+    valor = 50; impactos = 5;
+    break;
+  case 'v': case 'V':
+    valor = 25; impactos = 1;
+    break;
+  case 'g': case 'G':
+    valor = 0; impactos = -1;
+    break;
+  case 'a': case 'A':default:
+    valor = 10; impactos = 1;
+    break;
+  }
   bloque->fila = fila;
   bloque->columna = columna;
+  bloque->valor = valor;
+  bloque->impactos = impactos;
   bloque->color = color;
 }
 
+void golpe(ElemBloque *eBloque) {
+  (eBloque->bloque)->impactos--;
+}
 void liberarBloque(Bloque *bloque) {
   free(bloque);
 }
@@ -155,6 +187,32 @@ int fila(Bloque *bloque){
 int columna(Bloque *bloque){
   return (bloque->columna);
 }
+
+int impactos(Bloque *bloque){
+  return (bloque->impactos);
+}
+
 char color(Bloque *bloque){
   return (bloque->color);
+}
+
+int eFila(ElemBloque *eBloque){
+  return fila(eBloque->bloque);
+}
+int eColumna(ElemBloque *eBloque){
+  return columna(eBloque->bloque);
+}
+
+int eImpactos(ElemBloque *eBloque){
+  return impactos(eBloque->bloque);
+}
+
+char eColor(ElemBloque *eBloque){
+  return color(eBloque->bloque);
+}
+
+void cambiarSiguiente(ElemBloque *anterior, ElemBloque *actual) {
+  anterior->siguiente = actual->siguiente;
+  liberarBloque(actual->bloque);
+  free(actual);
 }

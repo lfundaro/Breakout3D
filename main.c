@@ -36,14 +36,23 @@ display(void)
   glMatrixMode(GL_MODELVIEW);
   /* Coordenadas del sistema */
   glLoadIdentity();
-  //  gluLookAt (0.0, -3.0, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   gluLookAt (0.0, -3.0, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+  // gluLookAt (1.0, -5.0, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   glTranslatef(-1.5,-2.0,0.0);
 
   /* Dibujo de objetos */ 
 
   /* Tablero */
   dibujarTablero(&xTablero,&yTablero);
+  
+  /* Bloques */
+  tmpBloque = cabezaBloque(tmpBloques);
+  while(tmpBloque != NULL) {
+    glPushMatrix();
+    dibujarBloque(tmpBloque);
+    tmpBloque = (tmpBloque->siguiente);
+    glPopMatrix();
+  }
 
   /* Barra Disparadora */
   glPushMatrix();

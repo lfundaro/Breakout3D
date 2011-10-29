@@ -299,39 +299,43 @@ moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
 /*   glutSolidCube(1.0); */
 
 
-
-
-
-/* void dibujarBloque(ElemBloque *tmpBloque) { */
-/*   float tmpColumna= columna(tmpBloque->bloque); */
-/*   float tmpFila = fila(tmpBloque->bloque)*.4; */
-/*   char tmpColor = color(tmpBloque->bloque); */
-/*   float r,g,b; */
-/*   switch (tmpColor) { */
-/*   case 'n': case 'N': */
-/*     r = 1; g = 0.3; b = 0; */
-/*     break; */
-/*   case 'r': case 'R': */
-/*     r = 0.8; g = 0; b = 0; */
-/*     break; */
-/*   case 'v': case 'V': */
-/*     r = 0; g = 0.7;b = 0.2; */
-/*     break; */
-/*   case 'g': case 'G': */
-/*     r = 0.6; g = 0.6; b = 0.6; */
-/*     break; */
-/*   case 'a': case 'A':default: */
-/*     r = 0.9; g = 0.9; b = 0; */
-/*     break; */
-/*   } */
-/*   glScalef(0.49,0.2,0.2); */
-/*   glTranslatef(-4.45+tmpColumna,0.5f,-29+5+(tmpFila*3)); */
-/*   glColor3f(r,g,b); */
-/*   glutSolidCube(1); */
-/*   glColor3f(0.8,0.8,0.8); */
-/*   glLineWidth(3); */
-/*   glutWireCube(1); */
-/* } */
+void dibujarBloque(ElemBloque *tmpBloque) {
+  float tamX = 0.3;
+  float tamY = 0.12;
+  float tamZ = 0.12;
+  float baseX = 0.15;
+  float baseY =40*0.12;
+  float baseZ =0.06;
+  int tmpColumna= eColumna(tmpBloque);
+  float tmpFila = fila(tmpBloque->bloque);
+  char tmpColor = color(tmpBloque->bloque);
+  float r,g,b;
+  switch (tmpColor) {
+  case 'n': case 'N':
+    r = 1; g = 0.3; b = 0;
+    break;
+  case 'r': case 'R':
+    r = 0.8; g = 0; b = 0;
+    break;
+  case 'v': case 'V':
+    r = 0; g = 0.7;b = 0.2;
+    break;
+  case 'g': case 'G':
+    r = 0.6; g = 0.6; b = 0.6;
+    break;
+  case 'a': case 'A':default:
+    r = 0.9; g = 0.9; b = 0;
+    break;
+  }
+  //  glTranslatef(baseX+(tmpColumna*tamX),baseY-(tmpFila*tamY),baseZ);
+  glTranslatef(baseX+(tmpColumna*tamX),baseY-(tmpFila*tamY),baseZ);
+  glScalef(tamX,tamY,tamZ);
+  glColor3f(r,g,b);
+  glutSolidCube(1);
+  glColor3f(0.2,0.2,0.2);
+  glLineWidth(1);
+  glutWireCube(1);
+}
 
 
 
