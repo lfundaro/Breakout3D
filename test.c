@@ -53,7 +53,6 @@ int main(int argc, char** argv) {
   glutInit(&argc, argv);
   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB |  GLUT_DEPTH);
   glutInitWindowSize (1024, 768);
-  //  glutInitWindowSize (800, 600);
   glutInitWindowPosition (100, 150);
   glutCreateWindow (argv[0]);
   /* Propiedades de openGL */
@@ -66,8 +65,8 @@ int main(int argc, char** argv) {
   /* Directivas para graficar */
   glutReshapeFunc(reshape);
   glutDisplayFunc(display);
-  //glutSpecialFunc(procesarTeclas);
-  // glutKeyboardFunc(keyboard);
+  glutSpecialFunc(procesarTeclas);
+  glutKeyboardFunc(keyboard);
   glutMainLoop();
   return 0;
 }

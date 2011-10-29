@@ -25,86 +25,27 @@ double cuboX = 0.0;
 double cuboZ = 0.0;
 int gameOver = 0;
 
-void display(void)
+void 
+display(void) 
 {
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glMatrixMode(GL_MODELVIEW);
+  /* Coordenadas del sistema */
   glLoadIdentity();
-  /* clear the matrix */
-  /* viewing transformation */
-  // Vista inclinada
-  // gluLookAt (0.0, 8.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
-  //  gluLookAt (0.0, 5.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
-  // gluLookAt (0.0, 5.0, 8.0, 0.0, 3.0, 0.0, 0.0, 2.0, -1.0);
-  gluLookAt (0.0, 8.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
-  // Vista recta
-  //   gluLookAt (10, 7, -3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0);
+  gluLookAt (0.0, -3.0, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+  glTranslatef(-1.5,-2.0,0.0);
 
-  glPushMatrix();
-  glTranslatef(despDisparador,0,0);
-  cuboX = -4.45+4.5 + despDisparador;
-  cuboZ = 4.7; //-29+5+(36.5*.4*3);
-  cuboMovible (despDisparador);
-  glPopMatrix();
+  /* Dibujo de objetos */ 
 
-  tmpBloque = cabezaBloque(tmpBloques);
-  while (tmpBloque != NULL) {
-    glPushMatrix();
-    dibujarBloque(tmpBloque);
-    glPopMatrix();
-    tmpBloque = (tmpBloque->siguiente);
-  }
+  /* Tablero */
+  dibujarTablero();
 
-  if (speedZ <= 0.0) pelotaSube = 1;
-  else pelotaSube = 0;
+  /* Barra Disparadora */
+  dibujarDisparador();
 
-  if (speedX <= 0.0) pelotaMovHor = 0;
-  else pelotaMovHor = 1;
-
-  glPushMatrix();
-  if (pelotaInicial) {   // Comienzo del juego
-    glTranslatef(0.0,0.5f,3.7);
-    Pelota();
-  }
-  else { // Pelota en Juego
-    if (!gameOver) {
-      if (pelotaSube) {
-        despPelotaZ += speedZ; //1.0; //0.05;
-        if (fabs(despPelotaZ - 0.1 + 5.4) < 0.001)
-          pelotaSube = 0;
-      }
-      else {  // Pelota baja
-        despPelotaZ += speedZ; //1.0; //0.05;
-        if (despPelotaZ + 0.1 - 3.75 > 0.001)
-          pelotaSube = 1;
-      }
-      if (!pelotaMovHor) { // Movimiento a la Izq.
-        despPelotaX += speedX; //1.0;
-        if (fabs(despPelotaX + 0.1 + 2.3/*3.2*/) < 0.1) {
-          pelotaMovHor = 1;
-        }
-      }
-      else { // Pelota se mueve la derecha
-        despPelotaX += speedX; //1.0;
-        if (despPelotaX + 0.1 - 2.3 /*2.0*/ > 0.001) {
-          pelotaMovHor = 0;
-        }
-      }
-      glTranslatef(despPelotaX, 0.5f, despPelotaZ);
-      // Chequear si pelota viene en dirección a la barra
-      if (cmpCoord2D(despPelotaX, despPelotaZ, cuboX, cuboZ) == 0)
-        Pelota();
-      else {
-        gameOver = 1;
-      }
-    }
-  }
-  glutPostRedisplay();
-  glPopMatrix();
-  
-  dibujarTablero (despDisparador);
   glutSwapBuffers();
-  glFlush ();
+  glFlush();
+  return;
 }
 
 void 
@@ -175,12 +116,11 @@ void reshape (int w, int h)
 {
   float aspectratio;
   aspectratio = (float) w / (float) h;
+  glViewport (0, 0, (GLsizei) w, (GLsizei) h);
   glMatrixMode (GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(60.0f, aspectratio, 0.5, 100.0);
-  //  glFrustum (0.0,0.0,w,h,-20.0,200.0);
+  gluPerspective(60.0f, aspectratio, 0.5, 20.0);
   glMatrixMode(GL_MODELVIEW);
-  glViewport (0, 0, (GLsizei) w, (GLsizei) h);
 }
 
 int main(int argc, char** argv)
@@ -196,8 +136,7 @@ int main(int argc, char** argv)
   /* Inicialización de ventana */
   glutInit(&argc, argv);
   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB |  GLUT_DEPTH);
-  //  glutInitWindowSize (1024, 768);
-  glutInitWindowSize (800, 600);
+  glutInitWindowSize (1024, 768);
   glutInitWindowPosition (100, 150);
   glutCreateWindow (argv[0]);
   /* Propiedades de openGL */
@@ -210,9 +149,7 @@ int main(int argc, char** argv)
   /* Directivas para graficar */
   glutReshapeFunc(reshape);
   glutDisplayFunc(display);
-  //glutSpecialFunc(procesarTeclas);
   glutKeyboardFunc(keyboard);
-  
   glutMainLoop();
   return 0;
 }
@@ -228,3 +165,87 @@ int main(int argc, char** argv)
       /* } */
       /* glTranslatef(despPelotaX, 0.5f, despPelotaZ); */
       /* Pelota(); */
+
+
+
+/* void display(void) */
+/* { */
+/*   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); */
+/*   glMatrixMode(GL_MODELVIEW); */
+/*   glLoadIdentity(); */
+/*   /\* clear the matrix *\/ */
+/*   /\* viewing transformation *\/ */
+/*   // Vista inclinada */
+/*   // gluLookAt (0.0, 8.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0); */
+/*   //  gluLookAt (0.0, 5.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0); */
+/*   // gluLookAt (0.0, 5.0, 8.0, 0.0, 3.0, 0.0, 0.0, 2.0, -1.0); */
+/*   gluLookAt (0.0, 8.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0); */
+/*   // Vista recta */
+/*   //   gluLookAt (10, 7, -3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0); */
+
+/*   glPushMatrix(); */
+/*   glTranslatef(despDisparador,0,0); */
+/*   cuboX = -4.45+4.5 + despDisparador; */
+/*   cuboZ = 4.7; //-29+5+(36.5*.4*3); */
+/*   cuboMovible (despDisparador); */
+/*   glPopMatrix(); */
+
+/*   tmpBloque = cabezaBloque(tmpBloques); */
+/*   while (tmpBloque != NULL) { */
+/*     glPushMatrix(); */
+/*     dibujarBloque(tmpBloque); */
+/*     glPopMatrix(); */
+/*     tmpBloque = (tmpBloque->siguiente); */
+/*   } */
+
+/*   if (speedZ <= 0.0) pelotaSube = 1; */
+/*   else pelotaSube = 0; */
+
+/*   if (speedX <= 0.0) pelotaMovHor = 0; */
+/*   else pelotaMovHor = 1; */
+
+/*   glPushMatrix(); */
+/*   if (pelotaInicial) {   // Comienzo del juego */
+/*     glTranslatef(0.0,0.5f,3.7); */
+/*     Pelota(); */
+/*   } */
+/*   else { // Pelota en Juego */
+/*     if (!gameOver) { */
+/*       if (pelotaSube) { */
+/*         despPelotaZ += speedZ; //1.0; //0.05; */
+/*         if (fabs(despPelotaZ - 0.1 + 5.4) < 0.001) */
+/*           pelotaSube = 0; */
+/*       } */
+/*       else {  // Pelota baja */
+/*         despPelotaZ += speedZ; //1.0; //0.05; */
+/*         if (despPelotaZ + 0.1 - 3.75 > 0.001) */
+/*           pelotaSube = 1; */
+/*       } */
+/*       if (!pelotaMovHor) { // Movimiento a la Izq. */
+/*         despPelotaX += speedX; //1.0; */
+/*         if (fabs(despPelotaX + 0.1 + 2.3/\*3.2*\/) < 0.1) { */
+/*           pelotaMovHor = 1; */
+/*         } */
+/*       } */
+/*       else { // Pelota se mueve la derecha */
+/*         despPelotaX += speedX; //1.0; */
+/*         if (despPelotaX + 0.1 - 2.3 /\*2.0*\/ > 0.001) { */
+/*           pelotaMovHor = 0; */
+/*         } */
+/*       } */
+/*       glTranslatef(despPelotaX, 0.5f, despPelotaZ); */
+/*       // Chequear si pelota viene en dirección a la barra */
+/*       if (cmpCoord2D(despPelotaX, despPelotaZ, cuboX, cuboZ) == 0) */
+/*         Pelota(); */
+/*       else { */
+/*         gameOver = 1; */
+/*       } */
+/*     } */
+/*   } */
+/*   glutPostRedisplay(); */
+/*   glPopMatrix(); */
+  
+/*   dibujarTablero (despDisparador); */
+/*   glutSwapBuffers(); */
+/*   glFlush (); */
+/* } */
