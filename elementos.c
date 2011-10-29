@@ -102,7 +102,7 @@ dibujarDisparador(GLfloat *x, GLfloat *y, GLfloat *z)
   glVertex3f(0.0,0.0,*z);
   glEnd();
   /* Techo */
-  glColor3f(1.0,1.0,1.0);
+  glColor3f(0.3,0.3,1.0);
   glBegin(GL_QUADS);
   glVertex3f(0.0,0.0,*z);
   glVertex3f(*x,0.0,*z);
@@ -111,24 +111,24 @@ dibujarDisparador(GLfloat *x, GLfloat *y, GLfloat *z)
   glEnd();
   glColor3f(0.3,0.3,1.0);
 
-  /* /\* Disparador *\/ */
-  /* glPushMatrix(); */
-  /* glColor3f(0.2,0.2,0.3); */
-  /* glTranslatef(0.15,0.0,0.0); */
-  /* glBegin(GL_QUADS); */
-  /* glVertex3f(0.0,0.0,0.099); */
-  /* glVertex3f(0.2,0.0,0.099); */
-  /* glVertex3f(0.2,0.09,0.099); */
-  /* glVertex3f(0.0,0.09,0.099); */
-  /* glEnd(); */
-  /* glColor3f(0.2,0.25,0.3); */
-  /* glBegin(GL_QUADS); */
-  /* glVertex3f(0.0,0.0,0.0); */
-  /* glVertex3f(0.2,0.0,0.0); */
-  /* glVertex3f(0.2,0.0,0.099); */
-  /* glVertex3f(0.0,0.0,0.099); */
-  /* glEnd(); */
-  /* glPopMatrix(); */
+  /* Disparador */
+  glPushMatrix();
+  glColor3f(0.2,0.2,0.3);
+  glTranslatef((*x/2.0)-((*x/2.0)/3),0.0,0.0);
+  glBegin(GL_QUADS);
+  glVertex3f(0.0,0.0,*z + 0.009);
+  glVertex3f(*x/3.0,0.0,*z + 0.009);
+  glVertex3f(*x/3.0,*z,*z + 0.009);
+  glVertex3f(0.0,*z,*z + 0.009);
+  glEnd();
+  glColor3f(0.2,0.25,0.3);
+  glBegin(GL_QUADS);
+  glVertex3f(0.0,0.0,0.0);
+  glVertex3f(*x/3.0,0.0,0.0);
+  glVertex3f(*x/3.0,-0.00009,*z);
+  glVertex3f(0.0,-0.00009,*z);
+  glEnd();
+  glPopMatrix();
 
 
   /* Cara derecha */
@@ -193,14 +193,16 @@ dibujarPelota()
 
 void
 moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
-            GLfloat *despPelotaY, GLfloat despDisparadorX)
+            GLfloat *despPelotaY, GLfloat despDisparadorX,
+            GLint *movInicial)
 {
-  *despPelotaX += despDisparadorX;
-  printf("despPelotaX = %f", *despPelotaX);
+  /* /\* if (*movInicial) *\/ */
+  /* /\*   *despPelotaX += despDisparadorX; *\/ */
+  /* *movInicial = 0; */
   if (*speedY >= 0)
     {
       // Límite Banda Superior
-      if (*despPelotaY < 6.95) 
+      if (*despPelotaY < 5.495) 
         {
           *despPelotaY += *speedY;
         }

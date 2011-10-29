@@ -15,7 +15,8 @@ dibujarPelota();
 
 void
 moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
-            GLfloat *despPelotaY, GLfloat despDisparadorX);
+            GLfloat *despPelotaY, GLfloat despDisparadorX,
+            GLint *movInicial);
 
 void 
 cuboMovible (double desp);
