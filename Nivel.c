@@ -110,6 +110,11 @@ extern int salto(LisNivel *niveles){
   return (niveles->salto);
 }
 
+extern int puntuacion(LisNivel *niveles){
+  return (niveles->puntuacion);
+}
+
+
 void iniBloque(Bloque *bloque, int fila, int columna, char color) {
   int valor, impactos;
   switch (color) {
@@ -136,8 +141,8 @@ void iniBloque(Bloque *bloque, int fila, int columna, char color) {
   bloque->color = color;
 }
 
-void golpe(ElemBloque *eBloque) {
-  (eBloque->bloque)->impactos--;
+void modificarImpactos(ElemBloque *eBloque, int factor){
+  (eBloque->bloque)->impactos += factor;
 }
 void liberarBloque(Bloque *bloque) {
   free(bloque);
@@ -211,8 +216,29 @@ char eColor(ElemBloque *eBloque){
   return color(eBloque->bloque);
 }
 
-void cambiarSiguiente(ElemBloque *anterior, ElemBloque *actual) {
-  anterior->siguiente = actual->siguiente;
-  liberarBloque(actual->bloque);
-  free(actual);
+void cambiarSiguiente(LisBloque *lista, ElemBloque *anterior, ElemBloque *actual) {
+  lista->numElementos--;
+  ElemBloque *tmp;
+  if (anterior == NULL) {
+    tmp = actual;
+    actual = (actual->siguiente);
+    liberarBloque(tmp->bloque);
+    lista->primero = actual;
+    free(tmp);
+
+  } else {
+    anterior->siguiente = actual->siguiente;
+    liberarBloque(actual->bloque);
+    free(actual);
+    actual = anterior;
+  }
+}
+
+extern void eMoverBloque(ElemBloque *eBloque, int fila, int columna) {
+  moverBloque(eBloque->bloque,fila,columna);
+}
+
+extern void moverBloque(Bloque *bloque, int fila, int columna){
+  bloque->fila += fila;
+  bloque->columna += columna;
 }

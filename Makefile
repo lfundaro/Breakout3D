@@ -1,5 +1,5 @@
 GCC = gcc
-OPS =
+OPS = -g
 LINK_OPS = -lglut -lGL -lGLU -lX11  -lm -L/usr/X11R6/lib
 OBJS = main.o elementos.o Lector.o Nivel.o utils.o
 TEST_OBJS = 
@@ -10,7 +10,7 @@ all: $(OBJS) Makefile
 main.o : main.c
 	$(GCC) $(OPS) -c main.c
 
-elements.o: elementos.c
+elementos.o: elementos.c
 	$(GCC) $(OPS) -c elementos.c
 
 Lector.o: Lector.c
