@@ -15,9 +15,8 @@ ElemNivel *tmpNivel;
 GLfloat despDisparadorX = 0.0;
 GLfloat despPelotaY = 0.10;
 GLfloat despPelotaX = 1.50;
+GLfloat posActualDisp = 0.0;
 int pelotaInicial = 1;
-GLfloat speedX = 0.08;
-GLfloat speedY = 0.08;
 int gameOver = 0;
 GLfloat xTablero = 3.0;
 GLfloat yTablero = 5.5;
@@ -28,6 +27,24 @@ GLfloat xCubo = 0.3;
 GLfloat yCubo = 0.12;
 GLfloat zCubo = 0.12;
 GLint movInicial = 1;
+GLint vidas = 3;
+GLfloat speedX = -0.01;
+GLfloat speedY = 0.03;
+GLfloat deltaXdisparador = 1.5;
+
+
+void
+reiniciarJuego()
+{
+  pelotaInicial = 1;
+  gameOver = 0;
+  despPelotaX = 1.50;
+  despPelotaY = 0.10;
+  despDisparadorX = 0.0;
+  movInicial = 1;
+  deltaXdisparador = 1.5;
+  glutPostRedisplay();
+}
 
 void 
 display(void) 
@@ -45,14 +62,14 @@ display(void)
   /* Tablero */
   dibujarTablero(&xTablero,&yTablero);
   
-  /* Bloques */
-  tmpBloque = cabezaBloque(tmpBloques);
-  while(tmpBloque != NULL) {
-    glPushMatrix();
-    dibujarBloque(tmpBloque);
-    tmpBloque = (tmpBloque->siguiente);
-    glPopMatrix();
-  }
+  /* /\* Bloques *\/ */
+  /* tmpBloque = cabezaBloque(tmpBloques); */
+  /* while(tmpBloque != NULL) { */
+  /*   glPushMatrix(); */
+  /*   dibujarBloque(tmpBloque); */
+  /*   tmpBloque = (tmpBloque->siguiente); */
+  /*   glPopMatrix(); */
+  /* } */
 
   /* Barra Disparadora */
   glPushMatrix();
@@ -65,18 +82,37 @@ display(void)
   if (pelotaInicial)  // Inicio de juego
     {
       glTranslatef(1.50+despDisparadorX,0.10,0.10);
+      //      deltaXdisparador += despDisparadorX;
       dibujarPelota();
     }
   else  // Juego comenzado
     {
-      moverPelota(&speedX,&speedY,&despPelotaX,
-                  &despPelotaY, &despDisparadorX,
-                  &movInicial);
+      if (!gameOver) 
+        {
+          if (vidas > 0)
+            {
+              int deltaVidas = vidas;
+              GLfloat deltaXdisparador = 1.50 + despDisparadorX;
+              moverPelota(&speedX,&speedY,&despPelotaX,
+                          &despPelotaY, &despDisparadorX,
+                          &movInicial, &deltaXdisparador, 
+                          &yDisparador,&vidas);
+              if (vidas < deltaVidas)
+                {
+                  reiniciarJuego();
+                }
+            }
+          else
+            {
+              gameOver = 1;
+            }
+        }
     }
   glPopMatrix();
   
   glutSwapBuffers();
   glFlush();
+
   return;
 }
 
@@ -90,7 +126,10 @@ void
 teclaDerecha ()
 {
   if (despDisparadorX <= 1.20)
-    despDisparadorX += 0.08;
+    {
+      despDisparadorX += 0.08;
+      deltaXdisparador += despDisparadorX;
+    }
   return;
 }
 
@@ -98,18 +137,17 @@ void
 teclaIzquierda ()
 {
   if (despDisparadorX >= -1.20)
-    despDisparadorX -= 0.08;
+    {
+      despDisparadorX -= 0.08;
+      deltaXdisparador += despDisparadorX;
+    }
   return;
 }
 
 void 
 teclaReiniciar ()
 {
-  pelotaInicial = 1;
-  gameOver = 0;
-  despPelotaX = 0.0;
-  despPelotaY = 3.7;
-  despDisparadorX = 0.0;
+  reiniciarJuego();
 }
 
 void
@@ -140,6 +178,7 @@ keyboard (unsigned char key, int x, int y)
   return;
 }
 
+
 void reshape (int w, int h)
 {
   float aspectratio;
@@ -163,7 +202,7 @@ int main(int argc, char** argv)
 
   /* Inicialización de ventana */
   glutInit(&argc, argv);
-  glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB |  GLUT_DEPTH);
+  glutInitDisplayMode (GLUT_RGB |  GLUT_DEPTH | GLUT_DOUBLE );
   glutInitWindowSize (1024, 768);
   glutInitWindowPosition (100, 150);
   glutCreateWindow (argv[0]);
@@ -181,19 +220,6 @@ int main(int argc, char** argv)
   glutMainLoop();
   return 0;
 }
-
-
-      /* despPelotaZ += speedZ; */
-      /* despPelotaX += speedX; */
-      /* if (despPelotaZ >= 0 && despPelotaZ + 0.01 - 3.8 < 0.1) { */
-      /*   speedZ = -speedZ; */
-      /* } */
-      /* if (despPelotaZ < 0 && despPelotaZ - 0.01 + 3.75 < 0.1) { */
-      /*   speedZ = -speedZ; */
-      /* } */
-      /* glTranslatef(despPelotaX, 0.5f, despPelotaZ); */
-      /* Pelota(); */
-
 
 
 /* void display(void) */
@@ -226,11 +252,6 @@ int main(int argc, char** argv)
 /*     tmpBloque = (tmpBloque->siguiente); */
 /*   } */
 
-/*   if (speedZ <= 0.0) pelotaSube = 1; */
-/*   else pelotaSube = 0; */
-
-/*   if (speedX <= 0.0) pelotaMovHor = 0; */
-/*   else pelotaMovHor = 1; */
 
 /*   glPushMatrix(); */
 /*   if (pelotaInicial) {   // Comienzo del juego */
