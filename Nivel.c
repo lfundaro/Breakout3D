@@ -225,8 +225,9 @@ void cambiarSiguiente(LisBloque *lista, ElemBloque *anterior, ElemBloque *actual
     liberarBloque(tmp->bloque);
     lista->primero = actual;
     free(tmp);
-
   } else {
+    tmp = cabezaBloque(lista);
+    while ((tmp->siguiente) != anterior) tmp=tmp->siguiente;
     anterior->siguiente = actual->siguiente;
     liberarBloque(actual->bloque);
     free(actual);
