@@ -1,5 +1,7 @@
 #include "elementos.h"
 #include "Nivel.h"
+#include <stdio.h>
+#include <math.h>
 
 void 
 dibujarTablero(GLfloat *x, GLfloat *y) 
@@ -194,7 +196,8 @@ dibujarPelota()
 void
 moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
             GLfloat *despPelotaY, GLfloat *despDisparadorX,
-            GLint *movInicial)
+            GLint *movInicial, GLfloat *xDisparador, 
+            GLfloat *yDisparador, GLint *vidas)
 {
   if (*movInicial)
     *despPelotaX += *despDisparadorX;
@@ -249,8 +252,37 @@ moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
         }
     }
   glTranslatef(*despPelotaX,*despPelotaY,0.0);
-  dibujarPelota();
+  // Chequear si pelota choca con base
+  int proximidadY = fabs(*despPelotaY - 0.20) <= 0.01;
+  //  printf ("proximidad %d\n",proximidad);
+  GLfloat dist = 0.0;
+  if (proximidadY)
+    {
+      //      printf("PelotaY = %f \n",*despPelotaY);
+      // printf ("Xdisparador = %f\n",*xDisparador);
+      //      dist = fabsf(*despPelotaX + 0.05 - (*xDisparador - 0.25);
+      printf ("coordX Pelota = %f\n",*despPelotaX);
+      printf ("coordX Disparador = %f\n",*xDisparador);
+      if (*despPelotaX <= (*xDisparador + 0.25) && 
+          *despPelotaX >= (*xDisparador - 0.25))
+        {
+          dibujarPelota();
+          glutPostRedisplay();
+          return;
+        }
+      else
+        {
+          --(*vidas);
+          printf ("vidas = %d\n",*vidas);
+          return;
+        }
+    }
+  else
+    {
+      dibujarPelota();
+    }
   glutPostRedisplay();
+  return;
 }
 
 
