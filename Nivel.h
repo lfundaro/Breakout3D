@@ -24,6 +24,8 @@ typedef struct LisNivel LisNivel;
 struct Bloque {
   int fila;
   int columna;
+  int valor;
+  int impactos;
   char color;
 };
 
@@ -55,40 +57,47 @@ struct LisNivel {
   int vida;
   int enfriamiento;
   int salto;
+  int puntuacion;
   int numElementos;
   ElemNivel *primero;
   ElemNivel *ultimo;
 };
 
-
 extern void iniNivel(Nivel *nivel, int num,char *identificador, int impacto, float velocidad, LisBloque *bloques);
 extern void liberarNivel(Nivel *nivel);
-
-extern int esVaciaNivel(LisNivel *lista);
 extern void iniLisNivel(LisNivel *lista,int vida, int frio, int salto);
+extern int esVaciaNivel(LisNivel *lista);
 extern void agregarNivel(LisNivel *lista, Nivel *nivel, ElemNivel *elemento);
-extern ElemNivel *cabezaNivel (LisNivel *lista);
+extern ElemNivel *cabezaNivel(LisNivel *lista);
 extern void liberarLisNivel(LisNivel *lista);
 
+extern void modificarVida(LisNivel *lista, int factor);
+extern void modificarPunt(LisNivel *lista, int factor);
 extern int numNivel(Nivel *nivel);
-extern char *nomNivel(Nivel *nivel);
-extern int impNivel(Nivel *nivel);
-extern LisBloque *bloquesNivel(Nivel *nivel);
 extern int vida(LisNivel *niveles);
 extern int enfriamiento(LisNivel *niveles);
 extern int salto(LisNivel *niveles);
 
-extern void iniBloque(Bloque *bloque, int fila, int columna, char color);
-extern void liberarBloque(Bloque *bloque);
+extern char *nomNivel(Nivel *nivel);
+extern int impNivel(Nivel *nivel);
+extern float velNivel(Nivel *nivel);
+extern LisBloque *bloquesNivel(Nivel *nivel);
 
+extern void iniBloque(Bloque *bloque, int fila, int columna, char color);
+extern void modificarImpactos(ElemBloque *eBloque, int factor);
+extern void liberarBloque(Bloque *bloque);
 extern int esVaciaBloque(LisBloque *lista);
 extern void iniLisBloque(LisBloque *lista);
 extern void agregarBloque(LisBloque *lista, Bloque *bloque, ElemBloque *elemento);
-extern ElemBloque *cabezaBloque (LisBloque *lista);
+extern ElemBloque *cabezaBloque(LisBloque *lista);
 extern void liberarLisBloque(LisBloque *lista);
-
 extern int fila(Bloque *bloque);
 extern int columna(Bloque *bloque);
+extern int impactos(Bloque *bloque);
 extern char color(Bloque *bloque);
-
+extern int eFila(ElemBloque *eBloque);
+extern int eColumna(ElemBloque *eBloque);
+extern int eImpactos(ElemBloque *eBloque);
+extern char eColor(ElemBloque *EBloque);
+extern void cambiarSiguiente(ElemBloque *anterior, ElemBloque *actual);
 #endif

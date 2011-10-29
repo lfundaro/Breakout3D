@@ -27,6 +27,7 @@ LisNivel *cargarInfo(){
   LisNivel *tmpNiveles;
   Nivel *tmpNivel;
   ElemNivel *tmpeNivel;
+  printf("Cargando Archivo\n");
   archivo = fopen("CONFIGURACION","r");
   if (archivo == NULL){
     tmpNiveles = (LisNivel*)malloc(sizeof(LisNivel));
