@@ -342,7 +342,7 @@ void dibujarBloque(ElemBloque *tmpBloque) {
   float tamY = 0.12;
   float tamZ = 0.12;
   float baseX = 0.15;
-  float baseY =40*0.12;
+  float baseY =(40*0.12);
   float baseZ =0.06;
   int tmpColumna= eColumna(tmpBloque);
   float tmpFila = fila(tmpBloque->bloque);

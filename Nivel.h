@@ -77,7 +77,7 @@ extern int numNivel(Nivel *nivel);
 extern int vida(LisNivel *niveles);
 extern int enfriamiento(LisNivel *niveles);
 extern int salto(LisNivel *niveles);
-
+extern int puntuacion(LisNivel *niveles);
 extern char *nomNivel(Nivel *nivel);
 extern int impNivel(Nivel *nivel);
 extern float velNivel(Nivel *nivel);
@@ -98,6 +98,8 @@ extern char color(Bloque *bloque);
 extern int eFila(ElemBloque *eBloque);
 extern int eColumna(ElemBloque *eBloque);
 extern int eImpactos(ElemBloque *eBloque);
-extern char eColor(ElemBloque *EBloque);
-extern void cambiarSiguiente(ElemBloque *anterior, ElemBloque *actual);
+extern char eColor(ElemBloque *eBloque);
+extern void cambiarSiguiente(LisBloque *lista, ElemBloque *anterior, ElemBloque *actual);
+extern void eMoverBloque(ElemBloque *eBloque, int fila, int columna);
+extern void moverBloque(Bloque *bloque, int fila, int columna);
 #endif

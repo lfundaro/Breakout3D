@@ -2,6 +2,7 @@
 #include "Nivel.h"
 #include "utils.h"
 
+#include <signal.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -28,6 +29,7 @@ GLfloat zDisparador = 0.12;
 GLfloat xCubo = 0.3;
 GLfloat yCubo = 0.12;
 GLfloat zCubo = 0.12;
+int mover = 0;
 GLint movInicial = 1;
 GLint vidas = 3;
 GLfloat speedX = -0.01;
@@ -47,9 +49,38 @@ reiniciarJuego()
   glutPostRedisplay();
 }
 
-void 
-display(void) 
-{
+int evaluarBloques(){
+  ElemBloque *anterior;
+  if (mover == 1) {
+    tmpBloque = cabezaBloque(tmpBloques);
+    anterior = NULL;
+    while(tmpBloque != NULL) {
+      modificarImpactos(tmpBloque,-1);
+      eMoverBloque(tmpBloque,1,0);
+      if (eFila(tmpBloque) == 40) {
+        gameOver = 1;
+      }
+      anterior = tmpBloque;
+      tmpBloque = (tmpBloque->siguiente);
+    }
+    mover = 0;
+    alarm(salto(juego));
+  }
+}
+
+void dibujarBloques(){
+  tmpBloque = cabezaBloque(tmpBloques);
+  while(tmpBloque != NULL) {
+    glPushMatrix();
+    if (eImpactos(tmpBloque) > 0) {
+      dibujarBloque(tmpBloque);
+    }
+    tmpBloque = (tmpBloque->siguiente);
+    glPopMatrix();
+  }
+}
+
+void display(void) {
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glMatrixMode(GL_MODELVIEW);
   /* Coordenadas del sistema */
@@ -58,19 +89,14 @@ display(void)
   // gluLookAt (1.0, -5.0, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   glTranslatef(-1.5,-2.0,0.0);
 
-  /* Dibujo de objetos */ 
+  /* Dibujo de objetos */
 
   /* Tablero */
   dibujarTablero(&xTablero,&yTablero);
-  
-  /* /\* Bloques *\/ */
-  /* tmpBloque = cabezaBloque(tmpBloques); */
-  /* while(tmpBloque != NULL) { */
-  /*   glPushMatrix(); */
-  /*   dibujarBloque(tmpBloque); */
-  /*   tmpBloque = (tmpBloque->siguiente); */
-  /*   glPopMatrix(); */
-  /* } */
+  /* Bloques */
+  evaluarBloques();
+  glutPostRedisplay();
+  dibujarBloques();
 
   /* Barra Disparadora */
   glPushMatrix();
@@ -109,8 +135,7 @@ display(void)
             }
         }
     }
-  glPopMatrix();
-  
+  glPopMatrix();  
   glutSwapBuffers();
   glFlush();
 
@@ -202,6 +227,12 @@ void reshape (int w, int h)
   glMatrixMode(GL_MODELVIEW);
 }
 
+void SIGALRM_mover (){
+  if (mover == 0){
+    mover = 1;
+  }
+}
+
 int main(int argc, char** argv)
 {
   juego = (LisNivel*)malloc(sizeof(LisNivel));
@@ -213,6 +244,7 @@ int main(int argc, char** argv)
   tmpBloques = bloquesNivel(tmpNivel->nivel);
   srand(time(NULL));
   /* Inicialización de ventana */
+  signal(SIGALRM, SIGALRM_mover);
   glutInit(&argc, argv);
   glutInitDisplayMode (GLUT_RGB |  GLUT_DEPTH | GLUT_DOUBLE );
   glutInitWindowSize (1024, 768);
@@ -227,6 +259,7 @@ int main(int argc, char** argv)
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); 
   /* Directivas para graficar */
   glutReshapeFunc(reshape);
+  alarm(enfriamiento(juego));
   glutDisplayFunc(display);
   glutKeyboardFunc(keyboard);
   glutMainLoop();
@@ -295,7 +328,7 @@ int main(int argc, char** argv)
 /*         } */
 /*       } */
 /*       glTranslatef(despPelotaX, 0.5f, despPelotaZ); */
-/*       // Chequear si pelota viene en dirección a la barra */
+/*       // Chequear si pelota viene en direcciÃ³n a la barra */
 /*       if (cmpCoord2D(despPelotaX, despPelotaZ, cuboX, cuboZ) == 0) */
 /*         Pelota(); */
 /*       else { */
