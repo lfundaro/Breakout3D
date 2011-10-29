@@ -266,6 +266,12 @@ moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
       if (*despPelotaX <= (*xDisparador + 0.25) && 
           *despPelotaX >= (*xDisparador - 0.25))
         {
+          //direccionDisparo(speedX, speedY);
+          
+          /* printf ("speedX = %f\n",*speedX); */
+          /* printf ("speedY = %f\n",*speedY); */
+          /* printf ("speedX = %f\n",*speedX); */
+          /* printf ("speedY = %f\n",*speedY); */
           dibujarPelota();
           glutPostRedisplay();
           return;
