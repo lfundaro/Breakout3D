@@ -3,6 +3,100 @@
 #include <stdio.h>
 #include <math.h>
 
+
+void dibujarBloque(ElemBloque *tmpBloque) {
+  float tamX = 0.3;
+  float tamY = 0.12;
+  float tamZ = 0.12;
+  float baseX = 0.15;
+  float baseY =(40*0.12);
+  float baseZ =0.06;
+  int tmpColumna= eColumna(tmpBloque);
+  int tmpFila = eFila(tmpBloque);
+  char tmpColor = eColor(tmpBloque);
+  float r,g,b;
+  float minX = baseX+(tmpColumna*tamX)-(tamX/2);
+  float maxX = baseX+(tmpColumna*tamX)+(tamX/2);
+  float maxY = baseY-(tmpFila*tamY)+(tamY/2);
+  float minY = baseY-(tmpFila*tamY)-(tamY/2);
+  switch (tmpColor) {
+  case 'n': case 'N':
+    r = 1; g = 0.3; b = 0;
+    break;
+  case 'r': case 'R':
+    r = 0.8; g = 0; b = 0;
+    break;
+  case 'v': case 'V':
+    r = 0; g = 0.7;b = 0.2;
+    break;
+  case 'g': case 'G':
+    r = 0.6; g = 0.6; b = 0.6;
+    break;
+  case 'a': case 'A':default:
+    r = 0.9; g = 0.9; b = 0;
+    break;
+  }
+  //  glTranslatef(baseX+(tmpColumna*tamX),baseY-(tmpFila*tamY),baseZ);
+  glTranslatef(baseX+(tmpColumna*tamX),baseY-(tmpFila*tamY),baseZ);
+  glScalef(tamX-0.01,tamY-0.01,tamZ-0.01);
+  glColor3f(r,g,b);
+  glutSolidCube(1);
+  glColor3f(0.2,0.2,0.2);
+  glLineWidth(2);
+  glutWireCube(1);
+}
+
+int
+evaluarBloques(ElemBloque *primero, int mover, int salto)
+{
+  ElemBloque *tmpBloque = primero;
+  ElemBloque *anterior;
+  int gameOver = 0;
+  if (mover == 1) {
+    anterior = NULL;
+    while(primero != NULL) {
+      eMoverBloque(tmpBloque,1,0);
+      if (eFila(tmpBloque) == 40) {
+        gameOver = 1;
+      }
+      anterior = tmpBloque;
+      primero = (primero->siguiente);
+    }
+    alarm(salto);
+    return gameOver;
+  }
+  return gameOver;
+}
+
+void
+dibujarBloques(LisBloque *bloques, ElemBloque *tmpBloque)
+{
+  ElemBloque *tmp, *tmp2;
+  if (tmpBloque != NULL && eImpactos(tmpBloque) == 0) {
+    printf("No deberia salir\n");
+    tmp = tmpBloque;
+    tmpBloque = tmpBloque->siguiente;
+    bloques->primero = tmpBloque;
+    liberarBloque(tmp->bloque);
+    free(tmp);
+  }
+  while(tmpBloque != NULL) {
+    tmp = tmpBloque->siguiente;
+    if (tmp != NULL && eImpactos(tmp) == 0) {
+      tmp2 = tmp;
+      tmp = tmp->siguiente;
+//      printf("Desechando: (%d,%d,%c,%d)\n",eFila(tmp2),eColumna(tmp2),eColor(tmp2),eImpactos(tmp2));
+      tmpBloque->siguiente = tmp;
+      liberarBloque(tmp2->bloque);
+      free(tmp2);
+    }
+    glPushMatrix();
+    dibujarBloque(tmpBloque);
+    tmpBloque = (tmpBloque->siguiente);
+    glPopMatrix();
+  }
+}
+
 void 
 dibujarTablero(GLfloat *x, GLfloat *y) 
 {
@@ -194,69 +288,116 @@ dibujarPelota()
 }
 
 void
-moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
+moverPelota(ElemBloque *primero, GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
             GLfloat *despPelotaY, GLfloat *despDisparadorX,
             GLint *movInicial, GLfloat *xDisparador, 
-            GLfloat *yDisparador, GLint *vidas)
+            GLfloat *yDisparador, GLint *vidas, LisNivel *juego)
 {
+  float tamX = 0.3;
+  float tamY = 0.12;
+  float tamZ = 0.12;
+  float baseX = 0.15;
+  float baseY =(40*0.12);
+  float baseZ =0.06;
+  GLfloat minX;
+  GLfloat maxX;
+  GLfloat minY;
+  GLfloat maxY;
+  GLfloat pelota = 0.05;
+  int pego = 0;
+  int flag = 1;
   if (*movInicial)
     *despPelotaX += *despDisparadorX;
   *movInicial = 0;
-  if (*speedY >= 0)
-    {
-      // Límite Banda Superior
-      if (*despPelotaY < 5.495) 
-        {
-          *despPelotaY += *speedY;
-        }
-      else 
-        {
-          *speedY = -*speedY;
-        }
+  while(primero != NULL) {
+    if (eImpactos(primero) != 0) {
+      minX = baseX+(eColumna(primero)*tamX)-(tamX/2);
+      maxX = baseX+(eColumna(primero)*tamX)+(tamX/2);
+      maxY = baseY-(eFila(primero)*tamY)+(tamY/2);
+      minY = baseY-(eFila(primero)*tamY)-(tamY/2);
+      if ((minX <= ((*despPelotaX)+pelota)) && (((*despPelotaX)-pelota) <= maxX)
+	  && (minY <= ((*despPelotaY)+pelota)) && (((*despPelotaY)-pelota)<= maxY)) {
+	if (minX <= ((*despPelotaX)+pelota)) {
+	  *speedX = -(*speedX);
+	  *despPelotaX += (*speedX);
+	} else if (((*despPelotaX)-pelota) <= maxX) {
+	  *speedX = -(*speedX);
+	  *despPelotaX += (*speedX);
+	}
+	if (minY <= ((*despPelotaY)+pelota)){
+	  *speedY = -(*speedY);
+	  *despPelotaY += (*speedY);
+	} else if (((*despPelotaY)-pelota)<= maxY) {
+	  *speedY = -(*speedY);
+	  *despPelotaY += (*speedY);
+	}
+	pego = 1;
+	modificarImpactos(primero,-1);
+	modificarPunt(juego,ePuntuacion(primero));
+	printf("Puntuacion:%d\n",puntuacion(juego));
+      }
     }
-  else    // Pelota Baja
-    {
-      // Límite Banda Inferior
-      if (*despPelotaY > 0.22)
-        {
-          *despPelotaY += *speedY;
-        }
-      else 
-        {
-          *speedY = -*speedY;
-        }
-    }
-  // Pelota se mueve lateralmente
-  if (*speedX >= 0)
-    {
-      // Límite banda derecha
-      if (*despPelotaX < 2.90)
-        {
-          *despPelotaX += *speedX;
-        }
-      else
-        {
-          *speedX = -*speedX;
-        }
-    }
-  // Límite banda izquierda
-  else      
-    {
-      if (*despPelotaX > 0.09)
-        {
-          *despPelotaX += *speedX;
-        }
-      else
-        {
-          *speedX = -*speedX;
-        }
-    }
+    primero=primero->siguiente;
+  }
+  //  glutPostRedisplay();
+  if (pego == 0) {
+    if (*speedY >= 0)
+      {
+	// LÃ­mite Banda Superior
+	if (*despPelotaY < 5.495) 
+	  {
+	    *despPelotaY += *speedY;
+	  }
+	else 
+	  {
+	    *speedY = -*speedY;
+	  }
+      }
+    else    // Pelota Baja
+      {
+	// LÃ­mite Banda Inferior
+	if (*despPelotaY > 0.22)
+	  {
+	    *despPelotaY += *speedY;
+	  }
+	else 
+	  {
+	    *speedY = -*speedY;
+	  }
+      }
+    // Pelota se mueve lateralmente
+    if (*speedX >= 0)
+      {
+	// LÃ­mite banda derecha
+	if (*despPelotaX < 2.90)
+	  {
+	    *despPelotaX += *speedX;
+	  }
+	else
+	  {
+	    *speedX = -*speedX;
+	  }
+      }
+    // LÃ­mite banda izquierda
+    else      
+      {
+	if (*despPelotaX > 0.09)
+	  {
+	    *despPelotaX += *speedX;
+	  }
+	else
+	  {
+	    *speedX = -*speedX;
+	  }
+      }
+  }
+  glPushMatrix();
   glTranslatef(*despPelotaX,*despPelotaY,0.0);
   // Chequear si pelota choca con base
   int proximidadY = fabs(*despPelotaY - 0.20) <= 0.01;
   //  printf ("proximidad %d\n",proximidad);
   GLfloat dist = 0.0;
-  if (proximidadY)
+  if (proximidadY && !pego)
     {
       //      printf("PelotaY = %f \n",*despPelotaY);
       // printf ("Xdisparador = %f\n",*xDisparador);
@@ -287,6 +428,7 @@ moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
     {
       dibujarPelota();
     }
+  glPopMatrix();
   glutPostRedisplay();
   return;
 }
@@ -336,140 +478,98 @@ moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
 /*   glColor3f(1.0,0.0,0.0); */
 /*   glutSolidCube(1.0); */
 
-
-void dibujarBloque(ElemBloque *tmpBloque) {
-  float tamX = 0.3;
-  float tamY = 0.12;
-  float tamZ = 0.12;
-  float baseX = 0.15;
-  float baseY =(40*0.12);
-  float baseZ =0.06;
-  int tmpColumna= eColumna(tmpBloque);
-  float tmpFila = fila(tmpBloque->bloque);
-  char tmpColor = color(tmpBloque->bloque);
-  float r,g,b;
-  switch (tmpColor) {
-  case 'n': case 'N':
-    r = 1; g = 0.3; b = 0;
-    break;
-  case 'r': case 'R':
-    r = 0.8; g = 0; b = 0;
-    break;
-  case 'v': case 'V':
-    r = 0; g = 0.7;b = 0.2;
-    break;
-  case 'g': case 'G':
-    r = 0.6; g = 0.6; b = 0.6;
-    break;
-  case 'a': case 'A':default:
-    r = 0.9; g = 0.9; b = 0;
-    break;
-  }
-  //  glTranslatef(baseX+(tmpColumna*tamX),baseY-(tmpFila*tamY),baseZ);
-  glTranslatef(baseX+(tmpColumna*tamX),baseY-(tmpFila*tamY),baseZ);
-  glScalef(tamX-0.01,tamY-0.01,tamZ-0.01);
-  glColor3f(r,g,b);
-  glutSolidCube(1);
-  glColor3f(0.2,0.2,0.2);
-  glLineWidth(2);
-  glutWireCube(1);
-}
-
-
-
- 
 /*
-  // Cubo movible //
-  // Cara trasera
-  glColor3f(0.0,0.0,1.0);
-  glBegin(GL_QUADS);
-  glVertex3f(0.5,0.0,0.5); // v3
-  glVertex3f(0.5,0.2,0.5);
-  glVertex3f(-0.5,0.2,0.5);
-  glVertex3f(-0.5,0.0,0.5); // v2
-  glEnd();
+// Cubo movible //
+// Cara trasera
+glColor3f(0.0,0.0,1.0);
+glBegin(GL_QUADS);
+glVertex3f(0.5,0.0,0.5); // v3
+glVertex3f(0.5,0.2,0.5);
+glVertex3f(-0.5,0.2,0.5);
+glVertex3f(-0.5,0.0,0.5); // v2
+glEnd();
 
-  // Techo
-  glColor3f(0.0,0.0,1.0);
-  glBegin(GL_QUADS);
-  glVertex3f(0.5,0.2,0.5);
-  glVertex3f(0.5,0.2,0.3);
-  glVertex3f(-0.5,0.2,0.3);
-  glVertex3f(-0.5,0.2,0.5);
-  glEnd();
+// Techo
+glColor3f(0.0,0.0,1.0);
+glBegin(GL_QUADS);
+glVertex3f(0.5,0.2,0.5);
+glVertex3f(0.5,0.2,0.3);
+glVertex3f(-0.5,0.2,0.3);
+glVertex3f(-0.5,0.2,0.5);
+glEnd();
 
-  //Pared Derecha
-  glColor3f(0.0,0.0,1.0);
-  glBegin(GL_QUADS);
-  glVertex3f(0.5,0.2,0.5);
-  glVertex3f(0.5,0.2,0.3);
-  glVertex3f(0.5,0.0,0.3);
-  glVertex3f(0.5,0.0,0.5);
-  glEnd();
+//Pared Derecha
+glColor3f(0.0,0.0,1.0);
+glBegin(GL_QUADS);
+glVertex3f(0.5,0.2,0.5);
+glVertex3f(0.5,0.2,0.3);
+glVertex3f(0.5,0.0,0.3);
+glVertex3f(0.5,0.0,0.5);
+glEnd();
 
-  // Pared Izquierda
-  glColor3f(1.0,0.5,1.0);
-  glBegin(GL_QUADS);
-  glVertex3f(-0.5,0.2,0.5);
-  glVertex3f(-0.5,0.2,0.3);
-  glVertex3f(-0.5,0.2,0.3);
-  glVertex3f(-0.5,0.0,0.5);
-  glEnd();
+// Pared Izquierda
+glColor3f(1.0,0.5,1.0);
+glBegin(GL_QUADS);
+glVertex3f(-0.5,0.2,0.5);
+glVertex3f(-0.5,0.2,0.3);
+glVertex3f(-0.5,0.2,0.3);
+glVertex3f(-0.5,0.0,0.5);
+glEnd();
 
-  // Pared Frontal
-  glColor3f(0.0,0.0,1.0);
-  glBegin(GL_QUADS);
-  glVertex3f(0.5,0.2,0.3);
-  glVertex3f(-0.5,0.2,0.3);
-  glVertex3f(-0.5,0.0,0.3);
-  glVertex3f(0.5,0.0,0.3);
-  glEnd();
+// Pared Frontal
+glColor3f(0.0,0.0,1.0);
+glBegin(GL_QUADS);
+glVertex3f(0.5,0.2,0.3);
+glVertex3f(-0.5,0.2,0.3);
+glVertex3f(-0.5,0.0,0.3);
+glVertex3f(0.5,0.0,0.3);
+glEnd();
 
-  // FIN Cubo movible //
+// FIN Cubo movible //
 
-  // Bordes Cubo movible //
-  // Cara trasera
-  glLineWidth(2);
-  glColor3f (0.0, 0.0, 0.0);
-  glBegin (GL_LINE_LOOP);
-  glVertex3f(0.5,0.0,0.5); // v3
-  glVertex3f(0.5,0.2,0.5);
-  glVertex3f(-0.5,0.2,0.5);
-  glVertex3f(-0.5,0.0,0.5); // v2
-  glEnd();
+// Bordes Cubo movible //
+// Cara trasera
+glLineWidth(2);
+glColor3f (0.0, 0.0, 0.0);
+glBegin (GL_LINE_LOOP);
+glVertex3f(0.5,0.0,0.5); // v3
+glVertex3f(0.5,0.2,0.5);
+glVertex3f(-0.5,0.2,0.5);
+glVertex3f(-0.5,0.0,0.5); // v2
+glEnd();
 
-  // Techo 
-  glLineWidth(2);
-  glTranslatef(0.0,0.0,2.1);
-  glColor3f (0.0, 0.0, 0.0);
-  glBegin (GL_LINE_LOOP);
-  glVertex3f(0.5,0.2,0.5);
-  glVertex3f(0.5,0.2,0.3);
-  glVertex3f(-0.5,0.2,0.3);
-  glVertex3f(-0.5,0.2,0.5);
-  glEnd();
+// Techo 
+glLineWidth(2);
+glTranslatef(0.0,0.0,2.1);
+glColor3f (0.0, 0.0, 0.0);
+glBegin (GL_LINE_LOOP);
+glVertex3f(0.5,0.2,0.5);
+glVertex3f(0.5,0.2,0.3);
+glVertex3f(-0.5,0.2,0.3);
+glVertex3f(-0.5,0.2,0.5);
+glEnd();
 
-  // Banda Izquierda
-  glLineWidth(2);
-  glTranslatef(0.0,0.0,2.1);
-  glColor3f (0.0, 0.0, 0.0);
-  glBegin (GL_LINE_LOOP);
-  glVertex3f(-0.5,0.2,0.5);
-  glVertex3f(-0.5,0.2,0.3);
-  glVertex3f(-0.5,0.2,0.3);
-  glVertex3f(-0.5,0.0,0.5);
-  glEnd();
+// Banda Izquierda
+glLineWidth(2);
+glTranslatef(0.0,0.0,2.1);
+glColor3f (0.0, 0.0, 0.0);
+glBegin (GL_LINE_LOOP);
+glVertex3f(-0.5,0.2,0.5);
+glVertex3f(-0.5,0.2,0.3);
+glVertex3f(-0.5,0.2,0.3);
+glVertex3f(-0.5,0.0,0.5);
+glEnd();
 
-  // Banda Derecha
-  glLineWidth(2);
-  glTranslatef(0.0,0.0,2.1);
-  glColor3f (0.0, 0.0, 0.0);
-  glBegin (GL_LINE_LOOP);
-  glVertex3f(0.5,0.2,0.5);
-  glVertex3f(0.5,0.2,0.3);
-  glVertex3f(0.5,0.0,0.3);
-  glVertex3f(0.5,0.0,0.5);
-  glEnd();
+// Banda Derecha
+glLineWidth(2);
+glTranslatef(0.0,0.0,2.1);
+glColor3f (0.0, 0.0, 0.0);
+glBegin (GL_LINE_LOOP);
+glVertex3f(0.5,0.2,0.5);
+glVertex3f(0.5,0.2,0.3);
+glVertex3f(0.5,0.0,0.3);
+glVertex3f(0.5,0.0,0.5);
+glEnd();
 */
   
 

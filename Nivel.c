@@ -235,11 +235,19 @@ void cambiarSiguiente(LisBloque *lista, ElemBloque *anterior, ElemBloque *actual
   }
 }
 
-extern void eMoverBloque(ElemBloque *eBloque, int fila, int columna) {
+void eMoverBloque(ElemBloque *eBloque, int fila, int columna) {
   moverBloque(eBloque->bloque,fila,columna);
 }
 
-extern void moverBloque(Bloque *bloque, int fila, int columna){
+void moverBloque(Bloque *bloque, int fila, int columna){
   bloque->fila += fila;
   bloque->columna += columna;
+}
+
+int ePuntuacion(ElemBloque *eBloque){
+  return punt(eBloque->bloque);
+}
+
+int punt(Bloque *bloque){
+  return bloque->valor;
 }

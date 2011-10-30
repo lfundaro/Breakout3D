@@ -102,4 +102,7 @@ extern char eColor(ElemBloque *eBloque);
 extern void cambiarSiguiente(LisBloque *lista, ElemBloque *anterior, ElemBloque *actual);
 extern void eMoverBloque(ElemBloque *eBloque, int fila, int columna);
 extern void moverBloque(Bloque *bloque, int fila, int columna);
+
+extern int ePuntuacion(ElemBloque *eBloque);
+extern int punt(Bloque *bloque);
 #endif

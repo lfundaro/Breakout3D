@@ -32,7 +32,7 @@ GLfloat zCubo = 0.12;
 int mover = 0;
 GLint movInicial = 1;
 GLint vidas = 3;
-GLfloat speedX = -0.01;
+GLfloat speedX = 0.03;
 GLfloat speedY = 0.03;
 GLfloat deltaXdisparador = 1.5;
 
@@ -49,55 +49,26 @@ reiniciarJuego()
   glutPostRedisplay();
 }
 
-int evaluarBloques(){
-  ElemBloque *anterior;
-  if (mover == 1) {
-    tmpBloque = cabezaBloque(tmpBloques);
-    anterior = NULL;
-    while(tmpBloque != NULL) {
-      modificarImpactos(tmpBloque,-1);
-      eMoverBloque(tmpBloque,1,0);
-      if (eFila(tmpBloque) == 40) {
-        gameOver = 1;
-      }
-      anterior = tmpBloque;
-      tmpBloque = (tmpBloque->siguiente);
-    }
-    mover = 0;
-    alarm(salto(juego));
-  }
-}
-
-void dibujarBloques(){
-  tmpBloque = cabezaBloque(tmpBloques);
-  while(tmpBloque != NULL) {
-    glPushMatrix();
-    if (eImpactos(tmpBloque) > 0) {
-      dibujarBloque(tmpBloque);
-    }
-    tmpBloque = (tmpBloque->siguiente);
-    glPopMatrix();
-  }
-}
-
 void display(void) {
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glMatrixMode(GL_MODELVIEW);
-  /* Coordenadas del sistema */
+  /* Coordenad=as del sistema */
   glLoadIdentity();
   gluLookAt (0.0, -3.0, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   // gluLookAt (1.0, -5.0, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   glTranslatef(-1.5,-2.0,0.0);
 
   /* Dibujo de objetos */
-
   /* Tablero */
   dibujarTablero(&xTablero,&yTablero);
-  /* Bloques */
-  evaluarBloques();
-  glutPostRedisplay();
-  dibujarBloques();
-
+ 
+ /* Bloques */
+  tmpBloque = cabezaBloque(tmpBloques);
+  gameOver = evaluarBloques(tmpBloque,mover,salto(juego));
+  if (mover == 1) mover = 0;
+  tmpBloque = cabezaBloque(tmpBloques);
+  dibujarBloques(tmpBloques,tmpBloque);
+  tmpBloque = cabezaBloque(tmpBloques);
   /* Barra Disparadora */
   glPushMatrix();
   glTranslatef(despDisparadorX,0.0,0.0);
@@ -105,12 +76,14 @@ void display(void) {
   glPopMatrix();
 
   /* Pelota */
-  glPushMatrix();
+
   if (pelotaInicial)  // Inicio de juego
     {
+      glPushMatrix();
       glTranslatef(1.50+despDisparadorX,0.10,0.10);
       //      deltaXdisparador += despDisparadorX;
       dibujarPelota();
+      glPopMatrix();  
     }
   else  // Juego comenzado
     {
@@ -120,10 +93,12 @@ void display(void) {
             {
               int deltaVidas = vidas;
               GLfloat deltaXdisparador = 1.50 + despDisparadorX;
-              moverPelota(&speedX,&speedY,&despPelotaX,
+
+	      tmpBloque=cabezaBloque(tmpBloques);
+	      moverPelota(tmpBloque,&speedX,&speedY,&despPelotaX,
                           &despPelotaY, &despDisparadorX,
                           &movInicial, &deltaXdisparador, 
-                          &yDisparador,&vidas);
+                          &yDisparador,&vidas,juego);
               if (vidas < deltaVidas)
                 {
                   reiniciarJuego();
@@ -135,10 +110,7 @@ void display(void) {
             }
         }
     }
-  glPopMatrix();  
   glutSwapBuffers();
-  glFlush();
-
   return;
 }
 
