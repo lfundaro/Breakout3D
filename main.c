@@ -1,6 +1,7 @@
 #include "Lector.h"
 #include "Nivel.h"
 #include "utils.h"
+#include "elementos.h"
 
 #include <signal.h>
 #include <GL/gl.h>
@@ -32,8 +33,8 @@ GLfloat zCubo = 0.12;
 int mover = 0;
 GLint movInicial = 1;
 GLint vidas = 3;
-GLfloat speedX = -0.01;
-GLfloat speedY = 0.03;
+GLfloat dirX = 0.03;
+GLfloat dirY = 0.03;
 GLfloat deltaXdisparador = 1.5;
 
 void
@@ -94,9 +95,9 @@ void display(void) {
   /* Tablero */
   dibujarTablero(&xTablero,&yTablero);
   /* Bloques */
-  evaluarBloques();
-  glutPostRedisplay();
-  dibujarBloques();
+  /* evaluarBloques(); */
+  /* glutPostRedisplay(); */
+  /* dibujarBloques(); */
 
   /* Barra Disparadora */
   glPushMatrix();
@@ -120,7 +121,7 @@ void display(void) {
             {
               int deltaVidas = vidas;
               GLfloat deltaXdisparador = 1.50 + despDisparadorX;
-              moverPelota(&speedX,&speedY,&despPelotaX,
+              moverPelota(&dirX,&dirY,&despPelotaX,
                           &despPelotaY, &despDisparadorX,
                           &movInicial, &deltaXdisparador, 
                           &yDisparador,&vidas);
@@ -143,13 +144,13 @@ void display(void) {
 }
 
 void
-direccionDisparo(GLfloat *speedX, GLfloat *speedY)
+direccionDisparo(GLfloat *dirX, GLfloat *dirY)
 {
   float grado;
   grado = (float) (rand() % 11 + 85);
   printf ("grado = %f\n",grado);
-  *speedX = ((int) cosf(grado))*(*speedX);
-  *speedY = ((int) sinf(grado))*(*speedY);
+  *dirX = cosf(grado)*(*dirX);
+  *dirY = sinf(grado)*(*dirY);
   return;
 }
 
@@ -262,6 +263,8 @@ int main(int argc, char** argv)
   alarm(enfriamiento(juego));
   glutDisplayFunc(display);
   glutKeyboardFunc(keyboard);
+  /* Inicializacion de vector direccion */
+  //  cambiarDireccion(&dirX, &dirY);
   glutMainLoop();
   return 0;
 }
@@ -316,13 +319,13 @@ int main(int argc, char** argv)
 /*           pelotaSube = 1; */
 /*       } */
 /*       if (!pelotaMovHor) { // Movimiento a la Izq. */
-/*         despPelotaX += speedX; //1.0; */
+/*         despPelotaX += dirX; //1.0; */
 /*         if (fabs(despPelotaX + 0.1 + 2.3/\*3.2*\/) < 0.1) { */
 /*           pelotaMovHor = 1; */
 /*         } */
 /*       } */
 /*       else { // Pelota se mueve la derecha */
-/*         despPelotaX += speedX; //1.0; */
+/*         despPelotaX += dirX; //1.0; */
 /*         if (despPelotaX + 0.1 - 2.3 /\*2.0*\/ > 0.001) { */
 /*           pelotaMovHor = 0; */
 /*         } */
