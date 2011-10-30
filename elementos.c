@@ -194,7 +194,21 @@ dibujarPelota()
 }
 
 void
-moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
+cambiarDireccion(GLfloat *dirX, GLfloat *dirY)
+{
+  float grado = (float) (rand() % 11 + 85);
+  *dirX = fabsf(cosf(grado));
+  *dirY = fabsf(sinf(grado));
+  // Regular velocidad
+  *dirX = *dirX/(10);
+  *dirY = *dirY/(10);
+  printf ("dirY = %f\n",*dirY);
+  printf ("dirX = %f\n",*dirX);
+  return;
+}
+
+void
+moverPelota(GLfloat *dirX, GLfloat *dirY, GLfloat *despPelotaX,
             GLfloat *despPelotaY, GLfloat *despDisparadorX,
             GLint *movInicial, GLfloat *xDisparador, 
             GLfloat *yDisparador, GLint *vidas)
@@ -202,16 +216,16 @@ moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
   if (*movInicial)
     *despPelotaX += *despDisparadorX;
   *movInicial = 0;
-  if (*speedY >= 0)
+  if (*dirY >= 0)
     {
       // Límite Banda Superior
       if (*despPelotaY < 5.495) 
         {
-          *despPelotaY += *speedY;
+          *despPelotaY += *dirY;
         }
       else 
         {
-          *speedY = -*speedY;
+          *dirY = -*dirY;
         }
     }
   else    // Pelota Baja
@@ -219,24 +233,24 @@ moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
       // Límite Banda Inferior
       if (*despPelotaY > 0.22)
         {
-          *despPelotaY += *speedY;
+          *despPelotaY += *dirY;
         }
       else 
         {
-          *speedY = -*speedY;
+          *dirY = -*dirY;
         }
     }
   // Pelota se mueve lateralmente
-  if (*speedX >= 0)
+  if (*dirX >= 0)
     {
       // Límite banda derecha
       if (*despPelotaX < 2.90)
         {
-          *despPelotaX += *speedX;
+          *despPelotaX += *dirX;
         }
       else
         {
-          *speedX = -*speedX;
+          *dirX = -*dirX;
         }
     }
   // Límite banda izquierda
@@ -244,11 +258,11 @@ moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
     {
       if (*despPelotaX > 0.09)
         {
-          *despPelotaX += *speedX;
+          *despPelotaX += *dirX;
         }
       else
         {
-          *speedX = -*speedX;
+          *dirX = -*dirX;
         }
     }
   glTranslatef(*despPelotaX,*despPelotaY,0.0);
@@ -266,14 +280,16 @@ moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
       if (*despPelotaX <= (*xDisparador + 0.25) && 
           *despPelotaX >= (*xDisparador - 0.25))
         {
-          //direccionDisparo(speedX, speedY);
-          
-          /* printf ("speedX = %f\n",*speedX); */
-          /* printf ("speedY = %f\n",*speedY); */
-          /* printf ("speedX = %f\n",*speedX); */
-          /* printf ("speedY = %f\n",*speedY); */
-          dibujarPelota();
-          glutPostRedisplay();
+          // Cambio de direccion de tiro
+           /* float grado; */
+           /* grado = (float) (rand() % 11 + 85); */
+           /* printf ("grado = %f\n",grado); */
+           /* *dirX = cosf(grado)*(*dirX); */
+           /* *dirY = sinf(grado)*(*dirY); */
+           /* printf ("dirY = %f\n",*dirY); */
+           /* printf ("dirX = %f \n", *dirX); */
+           dibujarPelota();
+           glutPostRedisplay();
           return;
         }
       else

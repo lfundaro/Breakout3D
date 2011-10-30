@@ -12,9 +12,11 @@ dibujarDisparador(GLfloat *x, GLfloat *y, GLfloat *z);
 void
 dibujarPelota();
 
+void
+cambiarDireccion(GLfloat *dirX, GLfloat *dirY);
 
 void
-moverPelota(GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
+moverPelota(GLfloat *dirX, GLfloat *dirY, GLfloat *despPelotaX,
             GLfloat *despPelotaY, GLfloat *despDisparadorX,
             GLint *movInicial, GLfloat *cuboX, GLfloat *cuboY,
             GLint *vidas);
