@@ -241,64 +241,51 @@ moverPelota(GLfloat *dirX, GLfloat *dirY, GLfloat *despPelotaX,
     }
   else    // Pelota Baja
     {
-      // Límite Banda Inferior
-      if (*despPelotaY - 0.05 > 0.18)
+      // Chequear si pelota choca con base
+      int proximidadY = *despPelotaY - 0.05 - 0.20 <= 0.01;
+      GLfloat dist = 0.0;
+      if (proximidadY)
         {
-          *despPelotaY += *dirY;
-        }
-      else
-        {
-          *dirY = -(*dirY);
-        }
-    }
-  // Pelota se mueve lateralmente
-  glTranslatef(*despPelotaX,*despPelotaY,0.0);
-  // Chequear si pelota choca con base
-  int proximidadY = *despPelotaY - 0.05 - 0.20 <= 0.01;
-  GLfloat dist = 0.0;
-  if (proximidadY)
-    {
-      if (*despPelotaX <= (*xDisparador + 0.25) && 
-          *despPelotaX >= (*xDisparador - 0.25))
-        {
-          // Cambio de direccion de tiro
-          // Si viene desde la izquierda
-              if (*despPelotaX < 1.50 && dirY < 0)
+          if (*despPelotaX <= (*xDisparador + 0.25) && 
+              *despPelotaX >= (*xDisparador - 0.25))
+            {
+              *dirY = -(*dirY);
+              // Cambio de direccion de tiro
+              // Si viene desde la izquierda
+              if (*dirX > 0)
                 {
                   // Pelota pega en el centro del disparador
                   if (*despPelotaX >= *xDisparador - 0.5/3.0 &&
                       *despPelotaX <= *xDisparador + 0.5/3.0)
                     {
-                      *dirX = -(*dirX);
                       printf("izquierda y cambio \n");
                     }
                 }
               // Pelota viene desde la derecha
-              if (*despPelotaX > 1.50 && dirY < 0)
+              if (*dirX < 0)
                 {
                   // Pelota pega en el centro del disparador
                   if (*despPelotaX >= *xDisparador - 0.5/3.0 &&
                       *despPelotaX <= *xDisparador + 0.5/3.0)
                     {
-                        *dirX = -(*dirX);
                       printf ("derecha y cambio \n");
                     }
                 }
-              dibujarPelota();
-              glutPostRedisplay();
+            }
+          else
+            {
+              --(*vidas);
+              printf ("vidas = %d\n",*vidas);
               return;
+            }
         }
       else
         {
-          --(*vidas);
-          printf ("vidas = %d\n",*vidas);
-          return;
+          *despPelotaY += *dirY; 
         }
     }
-  else
-    {
-      dibujarPelota();
-    }
+  glTranslatef(*despPelotaX,*despPelotaY,0.0);
+  dibujarPelota();
   glutPostRedisplay();
   return;
 }

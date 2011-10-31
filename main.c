@@ -169,7 +169,7 @@ teclaDerecha ()
 {
   if (despDisparadorX <= 1.20)
     {
-      despDisparadorX += 0.3;//0.08;
+      despDisparadorX += 0.08;
       deltaXdisparador += despDisparadorX;
     }
   return;
@@ -180,7 +180,7 @@ teclaIzquierda ()
 {
   if (despDisparadorX >= -1.20)
     {
-      despDisparadorX -= 0.3;//0.099;
+      despDisparadorX -= 0.08;
       deltaXdisparador += despDisparadorX;
     }
   return;
