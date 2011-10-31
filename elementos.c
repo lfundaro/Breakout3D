@@ -2,8 +2,6 @@
 #include "Nivel.h"
 #include <stdio.h>
 #include <math.h>
-
-
 void dibujarBloque(ElemBloque *tmpBloque) {
   float tamX = 0.3;
   float tamY = 0.12;
@@ -55,7 +53,7 @@ evaluarBloques(ElemBloque *primero, int mover, int salto)
   if (mover == 1) {
     anterior = NULL;
     while(primero != NULL) {
-      eMoverBloque(tmpBloque,1,0);
+      eMoverBloque(primero,1,0);
       if (eFila(tmpBloque) == 40) {
         gameOver = 1;
       }
@@ -78,16 +76,17 @@ dibujarBloques(LisBloque *bloques, ElemBloque *tmpBloque)
     bloques->primero = tmpBloque;
     liberarBloque(tmp->bloque);
     free(tmp);
+    bloques->numElementos -= 1;
   }
   while(tmpBloque != NULL) {
     tmp = tmpBloque->siguiente;
     if (tmp != NULL && eImpactos(tmp) == 0) {
       tmp2 = tmp;
       tmp = tmp->siguiente;
-//      printf("Desechando: (%d,%d,%c,%d)\n",eFila(tmp2),eColumna(tmp2),eColor(tmp2),eImpactos(tmp2));
       tmpBloque->siguiente = tmp;
       liberarBloque(tmp2->bloque);
       free(tmp2);
+      bloques->numElementos -= 1;
     }
     glPushMatrix();
     dibujarBloque(tmpBloque);
@@ -316,14 +315,6 @@ moverPelota(ElemBloque *primero, GLfloat *speedX, GLfloat *speedY, GLfloat *desp
       minY = baseY-(eFila(primero)*tamY)-(tamY/2);
       if ((minX <= ((*despPelotaX)+pelota)) && (((*despPelotaX)-pelota) <= maxX)
           && (minY <= ((*despPelotaY)+pelota)) && (((*despPelotaY)-pelota)<= maxY)) {
-	/* if ((fabsf(((*despPelotaX)+pelota) -minX) <= error) || (fabsf(((*despPelotaX)+pelota) - maxX) <= error)) { */
-	/*   printf("Cambie X\n"); */
-	/*   *speedX = -*speedX; */
-	/*   *despPelotaX += *speedX; */
-	/* } */
-	/* if ((fabsf(((*despPelotaY)+pelota)-minY) <= error) || (fabsf(((*despPelotaY)+pelota)-maxY) <= error)) { */
-
-	/* } */
 	if ((minY <= ((*despPelotaY)+pelota)) && (((*despPelotaY)-pelota)<= maxY) && (*despPelotaX <= minX || *despPelotaX >= maxX)) {
 	  *speedX = -*speedX; 
 	  *despPelotaX += *speedX; 
@@ -395,24 +386,14 @@ moverPelota(ElemBloque *primero, GLfloat *speedX, GLfloat *speedY, GLfloat *desp
   glTranslatef(*despPelotaX,*despPelotaY,0.0);
   // Chequear si pelota choca con base
   int proximidadY = fabs(*despPelotaY - 0.20) <= 0.01;
-  //  printf ("proximidad %d\n",proximidad);
   GLfloat dist = 0.0;
   if (proximidadY && !pego)
     {
-      //      printf("PelotaY = %f \n",*despPelotaY);
-      // printf ("Xdisparador = %f\n",*xDisparador);
-      //      dist = fabsf(*despPelotaX + 0.05 - (*xDisparador - 0.25);
-      printf ("coordX Pelota = %f\n",*despPelotaX);
-      printf ("coordX Disparador = %f\n",*xDisparador);
       if (*despPelotaX <= (*xDisparador + 0.25) && 
           *despPelotaX >= (*xDisparador - 0.25))
         {
           //direccionDisparo(speedX, speedY);
           
-          /* printf ("speedX = %f\n",*speedX); */
-          /* printf ("speedY = %f\n",*speedY); */
-          /* printf ("speedX = %f\n",*speedX); */
-          /* printf ("speedY = %f\n",*speedY); */
           dibujarPelota();
           glutPostRedisplay();
           return;
@@ -420,7 +401,6 @@ moverPelota(ElemBloque *primero, GLfloat *speedX, GLfloat *speedY, GLfloat *desp
       else
         {
           --(*vidas);
-          printf ("vidas = %d\n",*vidas);
           return;
         }
     }

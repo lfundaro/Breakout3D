@@ -75,9 +75,10 @@ LisNivel *cargarInfo(){
         caracter2 = strtok(NULL,separador);
         tmpColor = caracter2[0];
 
+	
         tmpBloque = (Bloque*)malloc(sizeof(Bloque));
         iniBloque(tmpBloque,tmpFila,tmpColumna,tmpColor);
-        tmpeBloque = (ElemBloque*)malloc(sizeof(ElemBloque));
+	tmpeBloque = (ElemBloque*)malloc(sizeof(ElemBloque));
         agregarBloque(tmpBloques,tmpBloque,tmpeBloque);
         j++;
       }
@@ -87,7 +88,7 @@ LisNivel *cargarInfo(){
       agregarNivel(tmpNiveles,tmpNivel,tmpeNivel);
       i++;
     }
-    printf("Carga exitosa\n");
+    printf("Cargados %d Niveles\nCarga exitosa\n",i);
     fclose(archivo);
   }
   return tmpNiveles;

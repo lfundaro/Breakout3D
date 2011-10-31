@@ -74,7 +74,6 @@ extern void modificarVida(LisNivel *lista, int factor) {
 }
 
 extern void modificarPunt(LisNivel *lista, int factor) {
-
   lista->puntuacion += factor;
 }
 
@@ -159,7 +158,13 @@ void iniLisBloque(LisBloque *lista){
 }
 
 void agregarBloque(LisBloque *lista, Bloque *bloque, ElemBloque *elemento){
-  lista->numElementos++;
+  switch(bloque->color) {
+  case 'g': case 'G':
+    
+    break;
+  default:
+    lista->numElementos++;
+  }
   elemento->bloque = bloque;
   elemento->siguiente = NULL;
   if (lista->primero == NULL) {

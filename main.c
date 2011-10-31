@@ -2,6 +2,7 @@
 #include "Nivel.h"
 #include "utils.h"
 
+#include <string.h>
 #include <signal.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -32,9 +33,18 @@ GLfloat zCubo = 0.12;
 int mover = 0;
 GLint movInicial = 1;
 GLint vidas = 3;
-GLfloat speedX = 0.03;
-GLfloat speedY = 0.03;
+GLfloat speedX = 0.01;
+GLfloat speedY = 0.01;
 GLfloat deltaXdisparador = 1.5;
+
+void mostra_text(char cadena[], float x, float y) {
+    int tmp;
+    glColor3f(0,1,0);
+    for(tmp=0; tmp < strlen(cadena); tmp++) { 
+      glRasterPos2f(x+(tmp*(0.15)), y );
+      glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,(int)cadena[tmp]);
+    }
+}
 
 void
 reiniciarJuego()
@@ -46,10 +56,14 @@ reiniciarJuego()
   despDisparadorX = 0.0;
   movInicial = 1;
   deltaXdisparador = 1.5;
+  alarm(0);
   glutPostRedisplay();
 }
 
 void display(void) {
+  char *stmpPuntuacion = (char*) malloc(sizeof(char)*15);
+  char *stmpNivel = (char*) malloc(sizeof(char)*15);
+  char *stmpVida = (char*) malloc(sizeof(char)*15);
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glMatrixMode(GL_MODELVIEW);
   /* Coordenad=as del sistema */
@@ -61,14 +75,32 @@ void display(void) {
   /* Dibujo de objetos */
   /* Tablero */
   dibujarTablero(&xTablero,&yTablero);
- 
- /* Bloques */
+  /* Puntuacion */
+
+  sprintf(stmpPuntuacion,"%s%d","Puntuacion: ",puntuacion(juego));
+  mostra_text(stmpPuntuacion,1,6);
+  sprintf(stmpNivel,"%s%d","Nivel: ",numNivel(tmpNivel->nivel));
+  mostra_text(stmpNivel,1,6.5);
+  sprintf(stmpVida,"%s%d","Vidas: ",vida(juego));
+  mostra_text(stmpVida,1,7);
+
+  if (tmpBloques->numElementos <= 0) {
+    tmpNivel = tmpNivel->siguiente;
+    if (tmpNivel == NULL){
+      printf("ganaste\n");
+    } else {
+      tmpBloques = bloquesNivel(tmpNivel->nivel);
+      reiniciarJuego();
+    }
+  }
+    /* Bloques */
   tmpBloque = cabezaBloque(tmpBloques);
   gameOver = evaluarBloques(tmpBloque,mover,salto(juego));
   if (mover == 1) mover = 0;
   tmpBloque = cabezaBloque(tmpBloques);
   dibujarBloques(tmpBloques,tmpBloque);
   tmpBloque = cabezaBloque(tmpBloques);
+
   /* Barra Disparadora */
   glPushMatrix();
   glTranslatef(despDisparadorX,0.0,0.0);
