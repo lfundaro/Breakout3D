@@ -19,7 +19,7 @@ void
 moverPelota(GLfloat *dirX, GLfloat *dirY, GLfloat *despPelotaX,
             GLfloat *despPelotaY, GLfloat *despDisparadorX,
             GLint *movInicial, GLfloat *cuboX, GLfloat *cuboY,
-            GLint *vidas);
+            GLint *vidas, GLfloat velocidad);
 
 void 
 cuboMovible (double desp);
