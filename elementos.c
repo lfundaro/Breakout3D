@@ -194,11 +194,21 @@ dibujarPelota()
 }
 
 void
+rotarVector(GLfloat *grado, GLfloat delta, GLfloat *compX, 
+            GLfloat *compY, GLfloat velocidad)
+{
+  *grado += delta;
+  *compX = fabsf(cosf(*grado*PI/180)*velocidad/NORM_VEL);
+  *compY = fabsf(sinf(*grado*PI/180)*velocidad/NORM_VEL);
+  return;
+}
+
+void
 moverPelota(GLfloat *dirX, GLfloat *dirY, GLfloat *despPelotaX,
             GLfloat *despPelotaY, GLfloat *despDisparadorX,
             GLint *movInicial, GLfloat *xDisparador, 
             GLfloat *yDisparador, GLint *vidas,
-            GLfloat velocidad)
+            GLfloat velocidad, GLfloat *grado, int *haChocado)
 {
   if (*movInicial)
     *despPelotaX += *despDisparadorX;
@@ -233,43 +243,83 @@ moverPelota(GLfloat *dirX, GLfloat *dirY, GLfloat *despPelotaX,
       if (*despPelotaY < 5.495) 
         {
           *despPelotaY += *dirY;
+          *haChocado = 0;
         }
       else 
         {
           *dirY = -(*dirY)*velocidad;
+          *haChocado = 0;
         }
     }
   else    // Pelota Baja
     {
+      
       // Chequear si pelota choca con base
-      int proximidadY = *despPelotaY - 0.05 - 0.20 <= 0.01;
+      int proximidadY = *despPelotaY - 0.05 <= 0.12;
       GLfloat dist = 0.0;
       if (proximidadY)
         {
+          // Choca la barra
           if (*despPelotaX <= (*xDisparador + 0.25) && 
               *despPelotaX >= (*xDisparador - 0.25))
             {
-              *dirY = -(*dirY);
-              // Cambio de direccion de tiro
-              // Si viene desde la izquierda
-              if (*dirX > 0)
+              if (!(*haChocado)) 
                 {
-                  // Pelota pega en el centro del disparador
-                  if (*despPelotaX >= *xDisparador - 0.5/3.0 &&
-                      *despPelotaX <= *xDisparador + 0.5/3.0)
+                  float rangoDisp = 0.5/3.0;
+                  // Cambio de direccion de tiro
+                  // Si viene desde la izquierda
+                  if (*dirX > 0)
                     {
-                      printf("izquierda y cambio \n");
+                      // Pelota pega en el centro del disparador
+                      if (*despPelotaX >= *xDisparador - rangoDisp &&
+                          *despPelotaX <= *xDisparador + rangoDisp)
+                        {
+                          *dirY = -(*dirY);
+                        }
+                      // Pega en la parte izquierda del disparador
+                      if (*despPelotaX >= *xDisparador - 0.25 &&
+                          *despPelotaX <= *xDisparador - rangoDisp)
+                        {
+                          // Se rota el vector +5
+                          rotarVector(grado, 5, dirX, dirY, velocidad);
+                          *dirX = -(*dirX);
+                        }
+                      // Pega en la parte derecha del disparador
+                      if (*despPelotaX <= *xDisparador + 0.25 &&
+                          *despPelotaX >= *xDisparador + rangoDisp)
+                        {
+                          // Se rota el vector -5
+                          rotarVector(grado,-5, dirX, dirY, velocidad);
+                          *dirX = -(*dirX);
+                        }
                     }
-                }
-              // Pelota viene desde la derecha
-              if (*dirX < 0)
-                {
-                  // Pelota pega en el centro del disparador
-                  if (*despPelotaX >= *xDisparador - 0.5/3.0 &&
-                      *despPelotaX <= *xDisparador + 0.5/3.0)
+                  // Pelota viene desde la derecha
+                  if (*dirX < 0)
                     {
-                      printf ("derecha y cambio \n");
+                      // Pelota pega en el centro del disparador
+                      if (*despPelotaX >= *xDisparador - rangoDisp &&
+                          *despPelotaX <= *xDisparador + rangoDisp)
+                        {
+                          *dirY = -(*dirY);
+                        }
+                      // Pega en la parte izquierda del disparador
+                      if (*despPelotaX >= *xDisparador - 0.25 &&
+                          *despPelotaX <= *xDisparador - rangoDisp)
+                        {
+                          // Se rota el vector -5
+                          rotarVector(grado,-5, dirX, dirY, velocidad);
+                          *dirX = -(*dirX);
+                        }
+                      // Pega en la parte derecha del disparador
+                      if (*despPelotaX <= *xDisparador + 0.25 &&
+                          *despPelotaX >= *xDisparador + rangoDisp)
+                        {
+                          // Se rota el vector +5
+                          rotarVector(grado,5, dirX, dirY, velocidad);
+                          *dirX = -(*dirX);
+                        }
                     }
+                  *haChocado = 1;
                 }
             }
           else
@@ -282,6 +332,7 @@ moverPelota(GLfloat *dirX, GLfloat *dirY, GLfloat *despPelotaX,
       else
         {
           *despPelotaY += *dirY; 
+          *haChocado = 0;
         }
     }
   glTranslatef(*despPelotaX,*despPelotaY,0.0);
