@@ -38,10 +38,11 @@ GLint vidas = 10;
 GLfloat dirX;
 GLfloat dirY;
 GLfloat grado;
-GLfloat velocidad = 0.3;
+GLfloat velocidad;
 GLfloat deltaXdisparador = 1.5;
 GLint haChocado = 0;
 int impacto;
+int contImpactos = 0;
 float incVel;
 
 
@@ -147,11 +148,11 @@ void display(void) {
               GLfloat deltaXdisparador = 1.50 + despDisparadorX;
 	      tmpBloque=cabezaBloque(tmpBloques);
 	      moverPelota(tmpBloque, &dirX,&dirY,&despPelotaX,
-			  &despPelotaY, &despDisparadorX,
-			  &movInicial, &deltaXdisparador, 
-			  &yDisparador,&vidas,juego,&velocidad,&grado,
-			  &haChocado);
-              if (vidas < deltaVidas)
+                      &despPelotaY, &despDisparadorX,
+                      &movInicial, &deltaXdisparador, 
+                      &yDisparador,&vidas,juego,&velocidad,&grado,
+                      &haChocado,&contImpactos);
+          if (vidas < deltaVidas)
                 {
                   reiniciarJuego();
                 }
@@ -250,7 +251,7 @@ void SIGALRM_mover (){
 int main(int argc, char** argv)
 {
   juego = (LisNivel*)malloc(sizeof(LisNivel));
-  juego = cargarInfo();
+  juego = cargarInfo(argv[1]);
   tmpNivel = cabezaNivel(juego);
   tmpBloques = bloquesNivel(tmpNivel->nivel);
   incVel = eVelNivel(tmpNivel);

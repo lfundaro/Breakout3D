@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "Nivel.h"
 
-LisNivel *cargarInfo(){
+LisNivel *cargarInfo(char *nombre){
   FILE *archivo;
   char caracter[100];
   char *caracter2;
@@ -28,7 +28,7 @@ LisNivel *cargarInfo(){
   Nivel *tmpNivel;
   ElemNivel *tmpeNivel;
   printf("Cargando Archivo\n");
-  archivo = fopen("CONFIGURACION","r");
+  archivo = fopen(nombre,"r");
   if (archivo == NULL){
     tmpNiveles = (LisNivel*)malloc(sizeof(LisNivel));
     iniLisNivel(tmpNiveles,0,0,0);
@@ -67,18 +67,18 @@ LisNivel *cargarInfo(){
       iniLisBloque(tmpBloques);
       while (j < tmpNumBloques) {
         fgets(caracter,100,archivo);
-	caracter2 = strtok(caracter,separador);
+        caracter2 = strtok(caracter,separador);
         tmpFila = atoi(caracter2);
         caracter2 = strtok(NULL,separador);
-	tmpColumna= atoi(caracter2);
-
+        tmpColumna= atoi(caracter2);
+        
         caracter2 = strtok(NULL,separador);
         tmpColor = caracter2[0];
-
-	
+        
+        
         tmpBloque = (Bloque*)malloc(sizeof(Bloque));
         iniBloque(tmpBloque,tmpFila,tmpColumna,tmpColor);
-	tmpeBloque = (ElemBloque*)malloc(sizeof(ElemBloque));
+        tmpeBloque = (ElemBloque*)malloc(sizeof(ElemBloque));
         agregarBloque(tmpBloques,tmpBloque,tmpeBloque);
         j++;
       }

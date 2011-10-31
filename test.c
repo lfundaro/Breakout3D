@@ -73,10 +73,15 @@
 
 
 
-
+//Cubo movible
 x = 0.5
 y = 0.09
 z = 0.09
+
+  //disparador
+y = 0.09
+z = 0.099
+x = 0.2
 
   // Tablero
 x = 3.0

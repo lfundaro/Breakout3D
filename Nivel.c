@@ -35,6 +35,8 @@ void iniLisNivel(LisNivel *lista,int vida, int frio, int salto){
   lista->numElementos = 0;
   lista->primero = NULL;
   lista->ultimo = NULL;
+  lista->impactoActual = 0;
+  lista->velActual = 0;
 }
 
 int esVaciaNivel(LisNivel *lista){

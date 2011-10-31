@@ -45,7 +45,7 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
 	    GLfloat *despDisparadorX, GLint *movInicial, 
 	    GLfloat *xDisparador, GLfloat *yDisparador, 
 	    GLint *vidas, LisNivel *juego, GLfloat *velocidad, 
-	    GLfloat *grado, int *haChocado);
+            GLfloat *grado, int *haChocado, int *impactos);
 
 void
 cambiarDireccion(GLfloat *dirX, GLfloat *dirY);

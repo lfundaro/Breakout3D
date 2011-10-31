@@ -298,7 +298,7 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
             GLfloat *despDisparadorX, GLint *movInicial, 
             GLfloat *xDisparador, GLfloat *yDisparador, 
             GLint *vidas, LisNivel *juego, GLfloat *velocidad, 
-            GLfloat *grado, int *haChocado)
+            GLfloat *grado, int *haChocado, int *impactos)
 {
   float tamX = 0.3;
   float tamY = 0.12;
@@ -375,14 +375,17 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
         }
       else
         {
-          if (impCtdd(juego) == impAct(juego)) {
-	    *velocidad += ((*velocidad)*velAct(juego));
-	    *dirY = -(*dirY)*(*velocidad);
-	    *dirX = (*dirX)*(*velocidad);
-            modCtdd(juego,0);
-          } else {
-            modCtdd(juego, (impCtdd(juego)+1));
-          }
+          *impactos += 1;
+          if (*impactos == 3)
+            {
+              *velocidad = (*velocidad)*1.1;
+              *dirY = -(*dirY)*(*velocidad);
+              *impactos = 0;
+            }
+          else
+            {
+              *dirY = -(*dirY);
+            }
           *haChocado = 0;
         }
     }

@@ -13,5 +13,5 @@
 #ifndef LECTOR_H
 #define LECTOR_H
 #include "Nivel.h"
-extern LisNivel *cargarInfo();
+extern LisNivel *cargarInfo(char * nombre);
 #endif
