@@ -73,7 +73,6 @@ dibujarBloques(LisBloque *bloques, ElemBloque *tmpBloque)
 {
   ElemBloque *tmp, *tmp2;
   if (tmpBloque != NULL && eImpactos(tmpBloque) == 0) {
-    printf("No deberia salir\n");
     tmp = tmpBloque;
     tmpBloque = tmpBloque->siguiente;
     bloques->primero = tmpBloque;
@@ -305,7 +304,7 @@ moverPelota(ElemBloque *primero, GLfloat *speedX, GLfloat *speedY, GLfloat *desp
   GLfloat maxY;
   GLfloat pelota = 0.05;
   int pego = 0;
-  int flag = 1;
+  float error = 0.01;
   if (*movInicial)
     *despPelotaX += *despDisparadorX;
   *movInicial = 0;
@@ -316,25 +315,26 @@ moverPelota(ElemBloque *primero, GLfloat *speedX, GLfloat *speedY, GLfloat *desp
       maxY = baseY-(eFila(primero)*tamY)+(tamY/2);
       minY = baseY-(eFila(primero)*tamY)-(tamY/2);
       if ((minX <= ((*despPelotaX)+pelota)) && (((*despPelotaX)-pelota) <= maxX)
-	  && (minY <= ((*despPelotaY)+pelota)) && (((*despPelotaY)-pelota)<= maxY)) {
-	if (minX <= ((*despPelotaX)+pelota)) {
-	  *speedX = -(*speedX);
-	  *despPelotaX += (*speedX);
-	} else if (((*despPelotaX)-pelota) <= maxX) {
-	  *speedX = -(*speedX);
-	  *despPelotaX += (*speedX);
+          && (minY <= ((*despPelotaY)+pelota)) && (((*despPelotaY)-pelota)<= maxY)) {
+	/* if ((fabsf(((*despPelotaX)+pelota) -minX) <= error) || (fabsf(((*despPelotaX)+pelota) - maxX) <= error)) { */
+	/*   printf("Cambie X\n"); */
+	/*   *speedX = -*speedX; */
+	/*   *despPelotaX += *speedX; */
+	/* } */
+	/* if ((fabsf(((*despPelotaY)+pelota)-minY) <= error) || (fabsf(((*despPelotaY)+pelota)-maxY) <= error)) { */
+
+	/* } */
+	if ((minY <= ((*despPelotaY)+pelota)) && (((*despPelotaY)-pelota)<= maxY) && (*despPelotaX <= minX || *despPelotaX >= maxX)) {
+	  *speedX = -*speedX; 
+	  *despPelotaX += *speedX; 
 	}
-	if (minY <= ((*despPelotaY)+pelota)){
-	  *speedY = -(*speedY);
-	  *despPelotaY += (*speedY);
-	} else if (((*despPelotaY)-pelota)<= maxY) {
-	  *speedY = -(*speedY);
-	  *despPelotaY += (*speedY);
+	if ((minX <= ((*despPelotaX)+pelota)) && (((*despPelotaX)-pelota) <= maxX) && (*despPelotaY <= minY || *despPelotaY >= maxY)) {
+	  *speedY = -*speedY;
+	  *despPelotaY += *speedY;
 	}
-	pego = 1;
-	modificarImpactos(primero,-1);
-	modificarPunt(juego,ePuntuacion(primero));
-	printf("Puntuacion:%d\n",puntuacion(juego));
+        pego = 1;
+        modificarImpactos(primero,-1);
+        modificarPunt(juego,ePuntuacion(primero));
       }
     }
     primero=primero->siguiente;
@@ -343,52 +343,52 @@ moverPelota(ElemBloque *primero, GLfloat *speedX, GLfloat *speedY, GLfloat *desp
   if (pego == 0) {
     if (*speedY >= 0)
       {
-	// LÃ­mite Banda Superior
-	if (*despPelotaY < 5.495) 
-	  {
-	    *despPelotaY += *speedY;
-	  }
-	else 
-	  {
-	    *speedY = -*speedY;
-	  }
+        // LÃ­mite Banda Superior
+        if (*despPelotaY < 5.495) 
+          {
+            *despPelotaY += *speedY;
+          }
+        else 
+          {
+            *speedY = -*speedY;
+          }
       }
     else    // Pelota Baja
       {
-	// LÃ­mite Banda Inferior
-	if (*despPelotaY > 0.22)
-	  {
-	    *despPelotaY += *speedY;
-	  }
-	else 
-	  {
-	    *speedY = -*speedY;
-	  }
+        // LÃ­mite Banda Inferior
+        if (*despPelotaY > 0.22)
+          {
+            *despPelotaY += *speedY;
+          }
+        else 
+          {
+            *speedY = -*speedY;
+          }
       }
     // Pelota se mueve lateralmente
     if (*speedX >= 0)
       {
-	// LÃ­mite banda derecha
-	if (*despPelotaX < 2.90)
-	  {
-	    *despPelotaX += *speedX;
-	  }
-	else
-	  {
-	    *speedX = -*speedX;
-	  }
+        // LÃ­mite banda derecha
+        if (*despPelotaX < 2.90)
+          {
+            *despPelotaX += *speedX;
+          }
+        else
+          {
+            *speedX = -*speedX;
+          }
       }
     // LÃ­mite banda izquierda
     else      
       {
-	if (*despPelotaX > 0.09)
-	  {
-	    *despPelotaX += *speedX;
-	  }
-	else
-	  {
-	    *speedX = -*speedX;
-	  }
+        if (*despPelotaX > 0.09)
+          {
+            *despPelotaX += *speedX;
+          }
+        else
+          {
+            *speedX = -*speedX;
+          }
       }
   }
   glPushMatrix();

@@ -25,4 +25,3 @@ moverPelota(ElemBloque *primero, GLfloat *speedX, GLfloat *speedY, GLfloat *desp
 
 void 
 cuboMovible (double desp);
-

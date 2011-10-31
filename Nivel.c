@@ -119,10 +119,10 @@ void iniBloque(Bloque *bloque, int fila, int columna, char color) {
   int valor, impactos;
   switch (color) {
   case 'n': case 'N':
-    valor = 30; impactos = 3;
+    valor = 30; impactos = 1;
     break;
   case 'r': case 'R':
-    valor = 50; impactos = 5;
+    valor = 50; impactos = 1;
     break;
   case 'v': case 'V':
     valor = 25; impactos = 1;
