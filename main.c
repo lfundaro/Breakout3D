@@ -1,6 +1,7 @@
 #include "Lector.h"
 #include "Nivel.h"
 #include "utils.h"
+#include "elementos.h"
 
 #include <string.h>
 #include <signal.h>
@@ -11,6 +12,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
+
 
 LisNivel *juego;
 LisBloque *tmpBloques;
@@ -32,10 +34,23 @@ GLfloat yCubo = 0.12;
 GLfloat zCubo = 0.12;
 int mover = 0;
 GLint movInicial = 1;
-GLint vidas = 3;
-GLfloat speedX = 0.01;
-GLfloat speedY = 0.01;
+GLint vidas = 10;
+GLfloat dirX;
+GLfloat dirY;
+GLfloat grado;
+GLfloat velocidad = 0.0;
 GLfloat deltaXdisparador = 1.5;
+GLint haChocado = 0;
+
+void
+direccionInicial(GLfloat *dirX, GLfloat *dirY,GLfloat velocidad,
+                 GLfloat *grado)
+{
+  *grado = (float) (rand() % 11 + 85);
+  *dirX = cosf(*grado*PI/180)*velocidad/NORM_VEL;
+  *dirY = sinf(*grado*PI/180)*velocidad/NORM_VEL;
+  return;
+}
 
 void mostra_text(char cadena[], float x, float y) {
     int tmp;
@@ -57,6 +72,8 @@ reiniciarJuego()
   movInicial = 1;
   deltaXdisparador = 1.5;
   alarm(0);
+  direccionInicial(&dirX,&dirY,velocidad,&grado);
+  haChocado = 0;
   glutPostRedisplay();
 }
 
@@ -72,17 +89,17 @@ void display(void) {
   // gluLookAt (1.0, -5.0, 2.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   glTranslatef(-1.5,-2.0,0.0);
 
-  /* Dibujo de objetos */
-  /* Tablero */
-  dibujarTablero(&xTablero,&yTablero);
   /* Puntuacion */
-
   sprintf(stmpPuntuacion,"%s%d","Puntuacion: ",puntuacion(juego));
   mostra_text(stmpPuntuacion,1,6);
   sprintf(stmpNivel,"%s%d","Nivel: ",numNivel(tmpNivel->nivel));
   mostra_text(stmpNivel,1,6.5);
   sprintf(stmpVida,"%s%d","Vidas: ",vida(juego));
   mostra_text(stmpVida,1,7);
+
+  /* Dibujo de objetos */
+  /* Tablero */
+  dibujarTablero(&xTablero,&yTablero);
 
   if (tmpBloques->numElementos <= 0) {
     tmpNivel = tmpNivel->siguiente;
@@ -125,12 +142,12 @@ void display(void) {
             {
               int deltaVidas = vidas;
               GLfloat deltaXdisparador = 1.50 + despDisparadorX;
-
 	      tmpBloque=cabezaBloque(tmpBloques);
-	      moverPelota(tmpBloque,&speedX,&speedY,&despPelotaX,
-                          &despPelotaY, &despDisparadorX,
-                          &movInicial, &deltaXdisparador, 
-                          &yDisparador,&vidas,juego);
+	      moverPelota(tmpBloque, &dirX,&dirY,&despPelotaX,
+			  &despPelotaY, &despDisparadorX,
+			  &movInicial, &deltaXdisparador, 
+			  &yDisparador,&vidas,juego,velocidad,&grado,
+			  &haChocado);
               if (vidas < deltaVidas)
                 {
                   reiniciarJuego();
@@ -143,17 +160,6 @@ void display(void) {
         }
     }
   glutSwapBuffers();
-  return;
-}
-
-void
-direccionDisparo(GLfloat *speedX, GLfloat *speedY)
-{
-  float grado;
-  grado = (float) (rand() % 11 + 85);
-  printf ("grado = %f\n",grado);
-  *speedX = ((int) cosf(grado))*(*speedX);
-  *speedY = ((int) sinf(grado))*(*speedY);
   return;
 }
 
@@ -266,84 +272,9 @@ int main(int argc, char** argv)
   alarm(enfriamiento(juego));
   glutDisplayFunc(display);
   glutKeyboardFunc(keyboard);
+  /* Inicializacion de vector direccion */
+  velocidad = 1.0;
+  direccionInicial(&dirX,&dirY,velocidad,&grado);
   glutMainLoop();
   return 0;
 }
-
-
-/* void display(void) */
-/* { */
-/*   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); */
-/*   glMatrixMode(GL_MODELVIEW); */
-/*   glLoadIdentity(); */
-/*   /\* clear the matrix *\/ */
-/*   /\* viewing transformation *\/ */
-/*   // Vista inclinada */
-/*   // gluLookAt (0.0, 8.0, 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0); */
-/*   //  gluLookAt (0.0, 5.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0); */
-/*   // gluLookAt (0.0, 5.0, 8.0, 0.0, 3.0, 0.0, 0.0, 2.0, -1.0); */
-/*   gluLookAt (0.0, 8.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0); */
-/*   // Vista recta */
-/*   //   gluLookAt (10, 7, -3.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0); */
-
-/*   glPushMatrix(); */
-/*   glTranslatef(despDisparador,0,0); */
-/*   cuboX = -4.45+4.5 + despDisparador; */
-/*   cuboZ = 4.7; //-29+5+(36.5*.4*3); */
-/*   cuboMovible (despDisparador); */
-/*   glPopMatrix(); */
-
-/*   tmpBloque = cabezaBloque(tmpBloques); */
-/*   while (tmpBloque != NULL) { */
-/*     glPushMatrix(); */
-/*     dibujarBloque(tmpBloque); */
-/*     glPopMatrix(); */
-/*     tmpBloque = (tmpBloque->siguiente); */
-/*   } */
-
-
-/*   glPushMatrix(); */
-/*   if (pelotaInicial) {   // Comienzo del juego */
-/*     glTranslatef(0.0,0.5f,3.7); */
-/*     Pelota(); */
-/*   } */
-/*   else { // Pelota en Juego */
-/*     if (!gameOver) { */
-/*       if (pelotaSube) { */
-/*         despPelotaZ += speedZ; //1.0; //0.05; */
-/*         if (fabs(despPelotaZ - 0.1 + 5.4) < 0.001) */
-/*           pelotaSube = 0; */
-/*       } */
-/*       else {  // Pelota baja */
-/*         despPelotaZ += speedZ; //1.0; //0.05; */
-/*         if (despPelotaZ + 0.1 - 3.75 > 0.001) */
-/*           pelotaSube = 1; */
-/*       } */
-/*       if (!pelotaMovHor) { // Movimiento a la Izq. */
-/*         despPelotaX += speedX; //1.0; */
-/*         if (fabs(despPelotaX + 0.1 + 2.3/\*3.2*\/) < 0.1) { */
-/*           pelotaMovHor = 1; */
-/*         } */
-/*       } */
-/*       else { // Pelota se mueve la derecha */
-/*         despPelotaX += speedX; //1.0; */
-/*         if (despPelotaX + 0.1 - 2.3 /\*2.0*\/ > 0.001) { */
-/*           pelotaMovHor = 0; */
-/*         } */
-/*       } */
-/*       glTranslatef(despPelotaX, 0.5f, despPelotaZ); */
-/*       // Chequear si pelota viene en direcciÃ³n a la barra */
-/*       if (cmpCoord2D(despPelotaX, despPelotaZ, cuboX, cuboZ) == 0) */
-/*         Pelota(); */
-/*       else { */
-/*         gameOver = 1; */
-/*       } */
-/*     } */
-/*   } */
-/*   glutPostRedisplay(); */
-/*   glPopMatrix(); */
-  
-/*   dibujarTablero (despDisparador); */
-/*   glutSwapBuffers(); */
-/*   glFlush (); */
-/* } */

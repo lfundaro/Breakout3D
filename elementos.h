@@ -2,6 +2,9 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include "Nivel.h"
+#define PI 3.14159265
+#define NORM_VEL 30
+
 // Función que dibuja el tablero
 
 int
@@ -18,10 +21,19 @@ void
 dibujarPelota();
 
 void
-moverPelota(ElemBloque *primero, GLfloat *speedX, GLfloat *speedY, GLfloat *despPelotaX,
-            GLfloat *despPelotaY, GLfloat *despDisparadorX,
-            GLint *movInicial, GLfloat *cuboX, GLfloat *cuboY,
-            GLint *vidas, LisNivel *juego);
+rotarVector(GLfloat *grado, GLfloat delta, GLfloat *compX, 
+            GLfloat *compY, GLfloat velocidad);
+
+void
+moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY, 
+	    GLfloat *despPelotaX, GLfloat *despPelotaY, 
+	    GLfloat *despDisparadorX, GLint *movInicial, 
+	    GLfloat *xDisparador, GLfloat *yDisparador, 
+	    GLint *vidas, LisNivel *juego, GLfloat velocidad, 
+	    GLfloat *grado, int *haChocado);
+
+void
+cambiarDireccion(GLfloat *dirX, GLfloat *dirY);
 
 void 
 cuboMovible (double desp);
