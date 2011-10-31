@@ -11,7 +11,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
-#define PI 3.14159265
+
 
 LisNivel *juego;
 LisBloque *tmpBloques;
@@ -36,16 +36,18 @@ GLint movInicial = 1;
 GLint vidas = 10;
 GLfloat dirX;
 GLfloat dirY;
+GLfloat grado;
 GLfloat velocidad = 0.0;
 GLfloat deltaXdisparador = 1.5;
+GLint haChocado = 0;
 
 void
-direccionInicial(GLfloat *dirX, GLfloat *dirY,GLfloat velocidad)
+direccionInicial(GLfloat *dirX, GLfloat *dirY,GLfloat velocidad,
+                 GLfloat *grado)
 {
-  float grado;
-  grado = (float) (rand() % 11 + 85);
-  *dirX = cosf(grado*PI/180)*velocidad/10.0;
-  *dirY = sinf(grado*PI/180)*velocidad/10.0;
+  *grado = (float) (rand() % 11 + 85);
+  *dirX = cosf(*grado*PI/180)*velocidad/NORM_VEL;
+  *dirY = sinf(*grado*PI/180)*velocidad/NORM_VEL;
   return;
 }
 
@@ -59,7 +61,8 @@ reiniciarJuego()
   despDisparadorX = 0.0;
   movInicial = 1;
   deltaXdisparador = 1.5;
-  //  direccionInicial(&dirX,&dirY,velocidad);
+  direccionInicial(&dirX,&dirY,velocidad,&grado);
+  haChocado = 0;
   glutPostRedisplay();
 }
 
@@ -124,8 +127,6 @@ void display(void) {
     {
       glTranslatef(1.50+despDisparadorX,0.10,0.10);
       //      deltaXdisparador += despDisparadorX;
-      printf ("Xpelota = %f\n",despPelotaX);
-      printf ("Xpelota = %f\n",despPelotaX);
       dibujarPelota();
     }
   else  // Juego comenzado
@@ -139,7 +140,8 @@ void display(void) {
               moverPelota(&dirX,&dirY,&despPelotaX,
                           &despPelotaY, &despDisparadorX,
                           &movInicial, &deltaXdisparador, 
-                          &yDisparador,&vidas,velocidad);
+                          &yDisparador,&vidas,velocidad,&grado,
+                          &haChocado);
               if (vidas < deltaVidas)
                 {
                   reiniciarJuego();
@@ -269,9 +271,10 @@ int main(int argc, char** argv)
   glutKeyboardFunc(keyboard);
   /* Inicializacion de vector direccion */
   velocidad = 1.0;
-  //  direccionInicial(&dirX,&dirY,velocidad);
-  dirX = -0.01;
-  dirY = 0.02;
+  direccionInicial(&dirX,&dirY,velocidad,&grado);
+  //  dirX = -0.01;
+  //  dirY = 0.02;
+  //  grado = 85;
   glutMainLoop();
   return 0;
 }
