@@ -11,13 +11,9 @@ void dibujarBloque(ElemBloque *tmpBloque) {
   float baseY =(40*0.12);
   float baseZ =0.06;
   int tmpColumna= eColumna(tmpBloque);
-  int tmpFila = eFila(tmpBloque);
-  char tmpColor = eColor(tmpBloque);
+  float tmpFila = fila(tmpBloque->bloque);
+  char tmpColor = color(tmpBloque->bloque);
   float r,g,b;
-  float minX = baseX+(tmpColumna*tamX)-(tamX/2);
-  float maxX = baseX+(tmpColumna*tamX)+(tamX/2);
-  float maxY = baseY-(tmpFila*tamY)+(tamY/2);
-  float minY = baseY-(tmpFila*tamY)-(tamY/2);
   switch (tmpColor) {
   case 'n': case 'N':
     r = 1; g = 0.3; b = 0;
@@ -286,6 +282,7 @@ dibujarPelota()
   return;
 }
 
+void
 rotarVector(GLfloat *grado, GLfloat delta, GLfloat *compX, 
             GLfloat *compY, GLfloat velocidad)
 {
@@ -472,40 +469,3 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
   return;
 }
 
-void dibujarBloque(ElemBloque *tmpBloque) {
-  float tamX = 0.3;
-  float tamY = 0.12;
-  float tamZ = 0.12;
-  float baseX = 0.15;
-  float baseY =(40*0.12);
-  float baseZ =0.06;
-  int tmpColumna= eColumna(tmpBloque);
-  float tmpFila = fila(tmpBloque->bloque);
-  char tmpColor = color(tmpBloque->bloque);
-  float r,g,b;
-  switch (tmpColor) {
-  case 'n': case 'N':
-    r = 1; g = 0.3; b = 0;
-    break;
-  case 'r': case 'R':
-    r = 0.8; g = 0; b = 0;
-    break;
-  case 'v': case 'V':
-    r = 0; g = 0.7;b = 0.2;
-    break;
-  case 'g': case 'G':
-    r = 0.6; g = 0.6; b = 0.6;
-    break;
-  case 'a': case 'A':default:
-    r = 0.9; g = 0.9; b = 0;
-    break;
-  }
-  //  glTranslatef(baseX+(tmpColumna*tamX),baseY-(tmpFila*tamY),baseZ);
-  glTranslatef(baseX+(tmpColumna*tamX),baseY-(tmpFila*tamY),baseZ);
-  glScalef(tamX-0.01,tamY-0.01,tamZ-0.01);
-  glColor3f(r,g,b);
-  glutSolidCube(1);
-  glColor3f(0.2,0.2,0.2);
-  glLineWidth(2);
-  glutWireCube(1);
-}
