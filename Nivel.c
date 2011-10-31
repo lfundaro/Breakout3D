@@ -77,8 +77,24 @@ extern void modificarPunt(LisNivel *lista, int factor) {
   lista->puntuacion += factor;
 }
 
-int numNivel(Nivel *nivel) {
+int impactoNivel(Nivel *nivel) {
+  return (nivel->impacto);
+}
+
+float velNivel(Nivel *nivel) {
+  return (nivel->velocidad);
+}
+
+int numNivel(Nivel *nivel){
   return (nivel->num);
+}
+
+int eImpactoNivel(ElemNivel *elemento) {
+  return impactoNivel(elemento->nivel);
+}
+
+float eVelNivel(ElemNivel *elemento) {
+  return velNivel(elemento->nivel);
 }
 
 char *nomNivel(Nivel *nivel){
@@ -87,10 +103,6 @@ char *nomNivel(Nivel *nivel){
 
 int impNivel(Nivel *nivel){
   return (nivel->impacto);
-}
-
-float velNivel(Nivel *nivel){
-  return (nivel->velocidad);
 }
 
 LisBloque *bloquesNivel(Nivel *nivel){
@@ -255,4 +267,20 @@ int ePuntuacion(ElemBloque *eBloque){
 
 int punt(Bloque *bloque){
   return bloque->valor;
+}
+
+int impAct(LisNivel *lista){
+  return (lista->impactoActual);
+}
+
+float velAct(LisNivel *lista){
+  return (lista->velActual);
+}
+
+int impCtdd(LisNivel *lista){
+  return (lista->impactoCtdd);
+}
+
+void modCtdd(LisNivel *lista, int factor) {
+  lista->impactoCtdd = factor;
 }

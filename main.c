@@ -38,9 +38,12 @@ GLint vidas = 10;
 GLfloat dirX;
 GLfloat dirY;
 GLfloat grado;
-GLfloat velocidad = 0.0;
+GLfloat velocidad = 0.3;
 GLfloat deltaXdisparador = 1.5;
 GLint haChocado = 0;
+int impacto;
+float incVel;
+
 
 void
 direccionInicial(GLfloat *dirX, GLfloat *dirY,GLfloat velocidad,
@@ -74,6 +77,7 @@ reiniciarJuego()
   alarm(0);
   direccionInicial(&dirX,&dirY,velocidad,&grado);
   haChocado = 0;
+  velocidad = 1.0;
   glutPostRedisplay();
 }
 
@@ -107,6 +111,8 @@ void display(void) {
       printf("ganaste\n");
     } else {
       tmpBloques = bloquesNivel(tmpNivel->nivel);
+      incVel = eVelNivel(tmpNivel);
+      impacto = eImpactoNivel(tmpNivel);
       reiniciarJuego();
     }
   }
@@ -128,11 +134,8 @@ void display(void) {
 
   if (pelotaInicial)  // Inicio de juego
     {
-      glPushMatrix();
       glTranslatef(1.50+despDisparadorX,0.10,0.10);
-      //      deltaXdisparador += despDisparadorX;
       dibujarPelota();
-      glPopMatrix();  
     }
   else  // Juego comenzado
     {
@@ -146,7 +149,7 @@ void display(void) {
 	      moverPelota(tmpBloque, &dirX,&dirY,&despPelotaX,
 			  &despPelotaY, &despDisparadorX,
 			  &movInicial, &deltaXdisparador, 
-			  &yDisparador,&vidas,juego,velocidad,&grado,
+			  &yDisparador,&vidas,juego,&velocidad,&grado,
 			  &haChocado);
               if (vidas < deltaVidas)
                 {
@@ -167,6 +170,7 @@ void
 teclaDisparar() 
 {
   pelotaInicial = 0;
+  alarm(enfriamiento(juego));
 }
 
 void
@@ -247,11 +251,10 @@ int main(int argc, char** argv)
 {
   juego = (LisNivel*)malloc(sizeof(LisNivel));
   juego = cargarInfo();
-  tmpBloques =(LisBloque*)malloc(sizeof(LisBloque));
-  tmpBloque = (ElemBloque*)malloc(sizeof(ElemBloque));
-  tmpNivel = (ElemNivel*)malloc(sizeof(ElemNivel));
   tmpNivel = cabezaNivel(juego);
   tmpBloques = bloquesNivel(tmpNivel->nivel);
+  incVel = eVelNivel(tmpNivel);
+  impacto = eImpactoNivel(tmpNivel);
   srand(time(NULL));
   /* Inicialización de ventana */
   signal(SIGALRM, SIGALRM_mover);
@@ -269,11 +272,10 @@ int main(int argc, char** argv)
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); 
   /* Directivas para graficar */
   glutReshapeFunc(reshape);
-  alarm(enfriamiento(juego));
   glutDisplayFunc(display);
   glutKeyboardFunc(keyboard);
-  /* Inicializacion de vector direccion */
   velocidad = 1.0;
+  /* Inicializacion de vector direccion */
   direccionInicial(&dirX,&dirY,velocidad,&grado);
   glutMainLoop();
   return 0;

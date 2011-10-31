@@ -294,11 +294,11 @@ rotarVector(GLfloat *grado, GLfloat delta, GLfloat *compX,
 
 void
 moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY, 
-	    GLfloat *despPelotaX, GLfloat *despPelotaY, 
-	    GLfloat *despDisparadorX, GLint *movInicial, 
-	    GLfloat *xDisparador, GLfloat *yDisparador, 
-	    GLint *vidas, LisNivel *juego, GLfloat velocidad, 
-	    GLfloat *grado, int *haChocado)
+            GLfloat *despPelotaX, GLfloat *despPelotaY, 
+            GLfloat *despDisparadorX, GLint *movInicial, 
+            GLfloat *xDisparador, GLfloat *yDisparador, 
+            GLint *vidas, LisNivel *juego, GLfloat *velocidad, 
+            GLfloat *grado, int *haChocado)
 {
   float tamX = 0.3;
   float tamY = 0.12;
@@ -324,14 +324,14 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
       minY = baseY-(eFila(primero)*tamY)-(tamY/2);
       if ((minX <= ((*despPelotaX)+pelota)) && (((*despPelotaX)-pelota) <= maxX)
           && (minY <= ((*despPelotaY)+pelota)) && (((*despPelotaY)-pelota)<= maxY)) {
-	if ((minY <= ((*despPelotaY)+pelota)) && (((*despPelotaY)-pelota)<= maxY) && (*despPelotaX <= minX || *despPelotaX >= maxX)) {
-	  *dirX = -*dirX; 
-	  *despPelotaX += *dirX; 
-	}
-	if ((minX <= ((*despPelotaX)+pelota)) && (((*despPelotaX)-pelota) <= maxX) && (*despPelotaY <= minY || *despPelotaY >= maxY)) {
-	  *dirY = -*dirY;
-	  *despPelotaY += *dirY;
-	}
+        if ((minY <= ((*despPelotaY)+pelota)) && (((*despPelotaY)-pelota)<= maxY) && (*despPelotaX <= minX || *despPelotaX >= maxX)) {
+          *dirX = -*dirX;
+          *despPelotaX += *dirX;
+        }
+        if ((minX <= ((*despPelotaX)+pelota)) && (((*despPelotaX)-pelota) <= maxX) && (*despPelotaY <= minY || *despPelotaY >= maxY)) {
+          *dirY = -*dirY;
+          *despPelotaY += *dirY;
+        }
         pego = 1;
         modificarImpactos(primero,-1);
         modificarPunt(juego,ePuntuacion(primero));
@@ -354,7 +354,7 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
         }
     }
   // Límite banda izquierda
-  else      
+  else
     {
       if (*despPelotaX > 0.09)
         {
@@ -368,14 +368,21 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
   if (*dirY >= 0)
     {
       // Límite Banda Superior
-      if (*despPelotaY < 5.495) 
+      if (*despPelotaY < 5.495)
         {
           *despPelotaY += *dirY;
           *haChocado = 0;
         }
-      else 
+      else
         {
-          *dirY = -(*dirY)*velocidad;
+          if (impCtdd(juego) == impAct(juego)) {
+	    *velocidad += ((*velocidad)*velAct(juego));
+	    *dirY = -(*dirY)*(*velocidad);
+	    *dirX = (*dirX)*(*velocidad);
+            modCtdd(juego,0);
+          } else {
+            modCtdd(juego, (impCtdd(juego)+1));
+          }
           *haChocado = 0;
         }
     }
@@ -387,10 +394,10 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
       if (proximidadY)
         {
           // Choca la barra
-          if (*despPelotaX <= (*xDisparador + 0.25) && 
+          if (*despPelotaX <= (*xDisparador + 0.25) &&
               *despPelotaX >= (*xDisparador - 0.25))
             {
-              if (!(*haChocado)) 
+              if (!(*haChocado))
                 {
                   float rangoDisp = 0.5/3.0;
                   // Cambio de direccion de tiro
@@ -408,7 +415,7 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
                           *despPelotaX <= *xDisparador - rangoDisp)
                         {
                           // Se rota el vector +5
-                          rotarVector(grado, 5, dirX, dirY, velocidad);
+                          rotarVector(grado, 5, dirX, dirY, *velocidad);
                           *dirX = -(*dirX);
                         }
                       // Pega en la parte derecha del disparador
@@ -416,7 +423,7 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
                           *despPelotaX >= *xDisparador + rangoDisp)
                         {
                           // Se rota el vector -5
-                          rotarVector(grado,-5, dirX, dirY, velocidad);
+                          rotarVector(grado,-5, dirX, dirY, *velocidad);
                           *dirX = -(*dirX);
                         }
                     }
@@ -434,7 +441,7 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
                           *despPelotaX <= *xDisparador - rangoDisp)
                         {
                           // Se rota el vector -5
-                          rotarVector(grado,-5, dirX, dirY, velocidad);
+                          rotarVector(grado,-5, dirX, dirY, *velocidad);
                           *dirX = -(*dirX);
                         }
                       // Pega en la parte derecha del disparador
@@ -442,7 +449,7 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
                           *despPelotaX >= *xDisparador + rangoDisp)
                         {
                           // Se rota el vector +5
-                          rotarVector(grado,5, dirX, dirY, velocidad);
+                          rotarVector(grado,5, dirX, dirY, *velocidad);
                           *dirX = -(*dirX);
                         }
                     }
@@ -452,7 +459,7 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
           else
             {
               --(*vidas);
-              printf ("vidas = %d\n",*vidas);
+              modificarVida(juego, -1);
               return;
             }
         }

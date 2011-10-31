@@ -58,6 +58,9 @@ struct LisNivel {
   int enfriamiento;
   int salto;
   int puntuacion;
+  int impactoActual;
+  float velActual;
+  int impactoCtdd;
   int numElementos;
   ElemNivel *primero;
   ElemNivel *ultimo;
@@ -105,4 +108,11 @@ extern void moverBloque(Bloque *bloque, int fila, int columna);
 
 extern int ePuntuacion(ElemBloque *eBloque);
 extern int punt(Bloque *bloque);
+
+extern int impAct(LisNivel *lista);
+extern float velAct(LisNivel *lista);
+extern int impCtdd(LisNivel *lista);
+extern void modCtdd(LisNivel *lista, int factor);
+extern int eImpactoNivel(ElemNivel *elemento);
+extern float eVelNivel(ElemNivel *elemento);
 #endif

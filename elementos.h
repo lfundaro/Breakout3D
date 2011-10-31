@@ -44,7 +44,7 @@ moverPelota(ElemBloque *primero,GLfloat *dirX, GLfloat *dirY,
 	    GLfloat *despPelotaX, GLfloat *despPelotaY, 
 	    GLfloat *despDisparadorX, GLint *movInicial, 
 	    GLfloat *xDisparador, GLfloat *yDisparador, 
-	    GLint *vidas, LisNivel *juego, GLfloat velocidad, 
+	    GLint *vidas, LisNivel *juego, GLfloat *velocidad, 
 	    GLfloat *grado, int *haChocado);
 
 void
